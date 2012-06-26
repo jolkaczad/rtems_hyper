@@ -48,11 +48,39 @@ $(PROJECT_INCLUDE)/bsp/bootcard.h: ../../shared/include/bootcard.h $(PROJECT_INC
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/bootcard.h
 PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/bootcard.h
 
-$(PROJECT_INCLUDE)/coverhd.h: include/coverhd.h $(PROJECT_INCLUDE)/$(dirstamp)
+$(PROJECT_INCLUDE)/coverhd.h: ../../shared/include/coverhd.h $(PROJECT_INCLUDE)/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/coverhd.h
 PREINSTALL_FILES += $(PROJECT_INCLUDE)/coverhd.h
 
 $(PROJECT_LIB)/linkcmds: startup/linkcmds $(PROJECT_LIB)/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_LIB)/linkcmds
 PREINSTALL_FILES += $(PROJECT_LIB)/linkcmds
+
+$(PROJECT_INCLUDE)/bsp/irq.h: irq/irq.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/irq.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/irq.h
+
+$(PROJECT_INCLUDE)/bsp/cpu.h: score/cpu.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/cpu.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/cpu.h
+
+$(PROJECT_INCLUDE)/bsp/i386.h: score/i386.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/i386.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/i386.h
+
+$(PROJECT_INCLUDE)/bsp/interrupts.h: score/interrupts.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/interrupts.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/interrupts.h
+
+$(PROJECT_INCLUDE)/bsp/registers.h: score/registers.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/registers.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/registers.h
+
+$(PROJECT_INCLUDE)/bsp/types.h: score/types.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/types.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/types.h
+
+$(PROJECT_INCLUDE)/bsp/idtr.h: score/idtr.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/idtr.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/idtr.h
 

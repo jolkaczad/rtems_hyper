@@ -19,7 +19,7 @@ nodist_include_bsp_HEADERS = ../../shared/include/bootcard.h
 DISTCLEANFILES = include/bspopts.h
 noinst_PROGRAMS =
 
-include_HEADERS += include/coverhd.h
+nodist_include_HEADERS += ../../shared/include/coverhd.h
 
 dist_project_lib_DATA += startup/linkcmds
 
@@ -29,20 +29,28 @@ libbsp_a_SOURCES =
 # startup
 libbsp_a_SOURCES += ../../shared/bspclean.c ../../shared/bsplibc.c \
     ../../shared/bsppretaskinghook.c ../../shared/bsppredriverhook.c \
-    ../../shared/startup/bspgetworkarea.c ../../shared/bsppost.c \
+    ../../shared/bspgetworkarea.c ../../shared/bsppost.c \
     startup/bspstart.c ../../shared/bootcard.c ../../shared/sbrk.c \
-    startup/setvec.c ../../shared/gnatinstallhandler.c
+    startup/setvec.c ../../shared/gnatinstallhandler.c ../../shared/bspreset.c
 # clock
 libbsp_a_SOURCES += clock/ckinit.c
 # console
 libbsp_a_SOURCES += console/console.c
 # timer
 libbsp_a_SOURCES += timer/timer.c timer/timerisr.c
-# shmsupp
-libbsp_a_SOURCES += shmsupp/addrconv.c shmsupp/getcfg.c shmsupp/lock.c \
-    shmsupp/mpisr.c
+#score
+libbsp_a_SOURCES += score/cpu.c score/cpu_asm.S
 
 EXTRA_DIST = times
 
 include $(srcdir)/preinstall.am
 include $(top_srcdir)/../../../../automake/local.am
+
+nodist_include_bsp_HEADERS += irq/irq.h
+# score
+nodist_include_bsp_HEADERS += score/cpu.h \
+															score/i386.h \
+															score/interrupts.h \
+															score/registers.h \
+															score/types.h \
+															score/idtr.h

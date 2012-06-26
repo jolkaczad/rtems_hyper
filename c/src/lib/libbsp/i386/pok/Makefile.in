@@ -95,10 +95,9 @@ am_libbsp_a_OBJECTS = bspclean.$(OBJEXT) bsplibc.$(OBJEXT) \
 	bsppretaskinghook.$(OBJEXT) bsppredriverhook.$(OBJEXT) \
 	bspgetworkarea.$(OBJEXT) bsppost.$(OBJEXT) bspstart.$(OBJEXT) \
 	bootcard.$(OBJEXT) sbrk.$(OBJEXT) setvec.$(OBJEXT) \
-	gnatinstallhandler.$(OBJEXT) ckinit.$(OBJEXT) \
-	console.$(OBJEXT) timer.$(OBJEXT) timerisr.$(OBJEXT) \
-	addrconv.$(OBJEXT) getcfg.$(OBJEXT) lock.$(OBJEXT) \
-	mpisr.$(OBJEXT)
+	gnatinstallhandler.$(OBJEXT) bspreset.$(OBJEXT) \
+	ckinit.$(OBJEXT) console.$(OBJEXT) timer.$(OBJEXT) \
+	timerisr.$(OBJEXT) cpu.$(OBJEXT) cpu_asm.$(OBJEXT)
 libbsp_a_OBJECTS = $(am_libbsp_a_OBJECTS)
 PROGRAMS = $(noinst_PROGRAMS)
 DEFAULT_INCLUDES = 
@@ -295,10 +294,13 @@ AM_CCASFLAGS = @RTEMS_CCASFLAGS@
 CPPASCOMPILE = $(CCAS) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CCASFLAGS) $(CCASFLAGS)
 include_bspdir = $(includedir)/bsp
 dist_project_lib_DATA = bsp_specs startup/linkcmds
-include_HEADERS = include/bsp.h ../../shared/include/tm27.h \
-	include/coverhd.h
-nodist_include_HEADERS = include/bspopts.h
-nodist_include_bsp_HEADERS = ../../shared/include/bootcard.h
+include_HEADERS = include/bsp.h ../../shared/include/tm27.h
+nodist_include_HEADERS = include/bspopts.h \
+	../../shared/include/coverhd.h
+# score
+nodist_include_bsp_HEADERS = ../../shared/include/bootcard.h irq/irq.h \
+	score/cpu.h score/i386.h score/interrupts.h score/registers.h \
+	score/types.h score/idtr.h
 DISTCLEANFILES = include/bspopts.h $(PREINSTALL_DIRS)
 noinst_LIBRARIES = libbsp.a
 
@@ -306,16 +308,15 @@ noinst_LIBRARIES = libbsp.a
 # clock
 # console
 # timer
-# shmsupp
+#score
 libbsp_a_SOURCES = ../../shared/bspclean.c ../../shared/bsplibc.c \
 	../../shared/bsppretaskinghook.c \
-	../../shared/bsppredriverhook.c \
-	../../shared/startup/bspgetworkarea.c ../../shared/bsppost.c \
-	startup/bspstart.c ../../shared/bootcard.c ../../shared/sbrk.c \
-	startup/setvec.c ../../shared/gnatinstallhandler.c \
+	../../shared/bsppredriverhook.c ../../shared/bspgetworkarea.c \
+	../../shared/bsppost.c startup/bspstart.c \
+	../../shared/bootcard.c ../../shared/sbrk.c startup/setvec.c \
+	../../shared/gnatinstallhandler.c ../../shared/bspreset.c \
 	clock/ckinit.c console/console.c timer/timer.c \
-	timer/timerisr.c shmsupp/addrconv.c shmsupp/getcfg.c \
-	shmsupp/lock.c shmsupp/mpisr.c
+	timer/timerisr.c score/cpu.c score/cpu_asm.S
 EXTRA_DIST = times
 PREINSTALL_DIRS = $(PROJECT_LIB)/$(dirstamp) \
 	$(PROJECT_INCLUDE)/$(dirstamp) \
@@ -323,13 +324,17 @@ PREINSTALL_DIRS = $(PROJECT_LIB)/$(dirstamp) \
 PREINSTALL_FILES = $(PROJECT_LIB)/bsp_specs $(PROJECT_INCLUDE)/bsp.h \
 	$(PROJECT_INCLUDE)/tm27.h $(PROJECT_INCLUDE)/bspopts.h \
 	$(PROJECT_INCLUDE)/bsp/bootcard.h $(PROJECT_INCLUDE)/coverhd.h \
-	$(PROJECT_LIB)/linkcmds
+	$(PROJECT_LIB)/linkcmds $(PROJECT_INCLUDE)/bsp/irq.h \
+	$(PROJECT_INCLUDE)/bsp/cpu.h $(PROJECT_INCLUDE)/bsp/i386.h \
+	$(PROJECT_INCLUDE)/bsp/interrupts.h \
+	$(PROJECT_INCLUDE)/bsp/registers.h \
+	$(PROJECT_INCLUDE)/bsp/types.h $(PROJECT_INCLUDE)/bsp/idtr.h
 CLEANFILES = $(PREINSTALL_FILES)
 PROJECT_TOOLS = $(PROJECT_RELEASE)/build-tools
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .o .obj
+.SUFFIXES: .S .c .o .obj
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/../../../../automake/compile.am $(top_srcdir)/../../bsp.am $(srcdir)/preinstall.am $(top_srcdir)/../../../../automake/local.am $(am__configure_deps)
@@ -397,7 +402,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addrconv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bootcard.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bspclean.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bspgetworkarea.Po@am__quote@
@@ -405,17 +409,45 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bsppost.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bsppredriverhook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bsppretaskinghook.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bspreset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bspstart.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ckinit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/console.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getcfg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu_asm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gnatinstallhandler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lock.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpisr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sbrk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/setvec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timerisr.Po@am__quote@
+
+.S.o:
+@am__fastdepCCAS_TRUE@	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCCAS_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(CPPASCOMPILE) -c -o $@ $<
+
+.S.obj:
+@am__fastdepCCAS_TRUE@	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCCAS_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(CPPASCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+cpu_asm.o: score/cpu_asm.S
+@am__fastdepCCAS_TRUE@	$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CCASFLAGS) $(CCASFLAGS) -MT cpu_asm.o -MD -MP -MF $(DEPDIR)/cpu_asm.Tpo -c -o cpu_asm.o `test -f 'score/cpu_asm.S' || echo '$(srcdir)/'`score/cpu_asm.S
+@am__fastdepCCAS_TRUE@	$(am__mv) $(DEPDIR)/cpu_asm.Tpo $(DEPDIR)/cpu_asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	source='score/cpu_asm.S' object='cpu_asm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CCASFLAGS) $(CCASFLAGS) -c -o cpu_asm.o `test -f 'score/cpu_asm.S' || echo '$(srcdir)/'`score/cpu_asm.S
+
+cpu_asm.obj: score/cpu_asm.S
+@am__fastdepCCAS_TRUE@	$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CCASFLAGS) $(CCASFLAGS) -MT cpu_asm.obj -MD -MP -MF $(DEPDIR)/cpu_asm.Tpo -c -o cpu_asm.obj `if test -f 'score/cpu_asm.S'; then $(CYGPATH_W) 'score/cpu_asm.S'; else $(CYGPATH_W) '$(srcdir)/score/cpu_asm.S'; fi`
+@am__fastdepCCAS_TRUE@	$(am__mv) $(DEPDIR)/cpu_asm.Tpo $(DEPDIR)/cpu_asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	source='score/cpu_asm.S' object='cpu_asm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CCASFLAGS) $(CCASFLAGS) -c -o cpu_asm.obj `if test -f 'score/cpu_asm.S'; then $(CYGPATH_W) 'score/cpu_asm.S'; else $(CYGPATH_W) '$(srcdir)/score/cpu_asm.S'; fi`
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -487,19 +519,19 @@ bsppredriverhook.obj: ../../shared/bsppredriverhook.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bsppredriverhook.obj `if test -f '../../shared/bsppredriverhook.c'; then $(CYGPATH_W) '../../shared/bsppredriverhook.c'; else $(CYGPATH_W) '$(srcdir)/../../shared/bsppredriverhook.c'; fi`
 
-bspgetworkarea.o: ../../shared/startup/bspgetworkarea.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bspgetworkarea.o -MD -MP -MF $(DEPDIR)/bspgetworkarea.Tpo -c -o bspgetworkarea.o `test -f '../../shared/startup/bspgetworkarea.c' || echo '$(srcdir)/'`../../shared/startup/bspgetworkarea.c
+bspgetworkarea.o: ../../shared/bspgetworkarea.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bspgetworkarea.o -MD -MP -MF $(DEPDIR)/bspgetworkarea.Tpo -c -o bspgetworkarea.o `test -f '../../shared/bspgetworkarea.c' || echo '$(srcdir)/'`../../shared/bspgetworkarea.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bspgetworkarea.Tpo $(DEPDIR)/bspgetworkarea.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../../shared/startup/bspgetworkarea.c' object='bspgetworkarea.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../../shared/bspgetworkarea.c' object='bspgetworkarea.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bspgetworkarea.o `test -f '../../shared/startup/bspgetworkarea.c' || echo '$(srcdir)/'`../../shared/startup/bspgetworkarea.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bspgetworkarea.o `test -f '../../shared/bspgetworkarea.c' || echo '$(srcdir)/'`../../shared/bspgetworkarea.c
 
-bspgetworkarea.obj: ../../shared/startup/bspgetworkarea.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bspgetworkarea.obj -MD -MP -MF $(DEPDIR)/bspgetworkarea.Tpo -c -o bspgetworkarea.obj `if test -f '../../shared/startup/bspgetworkarea.c'; then $(CYGPATH_W) '../../shared/startup/bspgetworkarea.c'; else $(CYGPATH_W) '$(srcdir)/../../shared/startup/bspgetworkarea.c'; fi`
+bspgetworkarea.obj: ../../shared/bspgetworkarea.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bspgetworkarea.obj -MD -MP -MF $(DEPDIR)/bspgetworkarea.Tpo -c -o bspgetworkarea.obj `if test -f '../../shared/bspgetworkarea.c'; then $(CYGPATH_W) '../../shared/bspgetworkarea.c'; else $(CYGPATH_W) '$(srcdir)/../../shared/bspgetworkarea.c'; fi`
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bspgetworkarea.Tpo $(DEPDIR)/bspgetworkarea.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../../shared/startup/bspgetworkarea.c' object='bspgetworkarea.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../../shared/bspgetworkarea.c' object='bspgetworkarea.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bspgetworkarea.obj `if test -f '../../shared/startup/bspgetworkarea.c'; then $(CYGPATH_W) '../../shared/startup/bspgetworkarea.c'; else $(CYGPATH_W) '$(srcdir)/../../shared/startup/bspgetworkarea.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bspgetworkarea.obj `if test -f '../../shared/bspgetworkarea.c'; then $(CYGPATH_W) '../../shared/bspgetworkarea.c'; else $(CYGPATH_W) '$(srcdir)/../../shared/bspgetworkarea.c'; fi`
 
 bsppost.o: ../../shared/bsppost.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bsppost.o -MD -MP -MF $(DEPDIR)/bsppost.Tpo -c -o bsppost.o `test -f '../../shared/bsppost.c' || echo '$(srcdir)/'`../../shared/bsppost.c
@@ -585,6 +617,20 @@ gnatinstallhandler.obj: ../../shared/gnatinstallhandler.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gnatinstallhandler.obj `if test -f '../../shared/gnatinstallhandler.c'; then $(CYGPATH_W) '../../shared/gnatinstallhandler.c'; else $(CYGPATH_W) '$(srcdir)/../../shared/gnatinstallhandler.c'; fi`
 
+bspreset.o: ../../shared/bspreset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bspreset.o -MD -MP -MF $(DEPDIR)/bspreset.Tpo -c -o bspreset.o `test -f '../../shared/bspreset.c' || echo '$(srcdir)/'`../../shared/bspreset.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bspreset.Tpo $(DEPDIR)/bspreset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../../shared/bspreset.c' object='bspreset.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bspreset.o `test -f '../../shared/bspreset.c' || echo '$(srcdir)/'`../../shared/bspreset.c
+
+bspreset.obj: ../../shared/bspreset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bspreset.obj -MD -MP -MF $(DEPDIR)/bspreset.Tpo -c -o bspreset.obj `if test -f '../../shared/bspreset.c'; then $(CYGPATH_W) '../../shared/bspreset.c'; else $(CYGPATH_W) '$(srcdir)/../../shared/bspreset.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bspreset.Tpo $(DEPDIR)/bspreset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../../shared/bspreset.c' object='bspreset.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bspreset.obj `if test -f '../../shared/bspreset.c'; then $(CYGPATH_W) '../../shared/bspreset.c'; else $(CYGPATH_W) '$(srcdir)/../../shared/bspreset.c'; fi`
+
 ckinit.o: clock/ckinit.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ckinit.o -MD -MP -MF $(DEPDIR)/ckinit.Tpo -c -o ckinit.o `test -f 'clock/ckinit.c' || echo '$(srcdir)/'`clock/ckinit.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/ckinit.Tpo $(DEPDIR)/ckinit.Po
@@ -641,61 +687,19 @@ timerisr.obj: timer/timerisr.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o timerisr.obj `if test -f 'timer/timerisr.c'; then $(CYGPATH_W) 'timer/timerisr.c'; else $(CYGPATH_W) '$(srcdir)/timer/timerisr.c'; fi`
 
-addrconv.o: shmsupp/addrconv.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT addrconv.o -MD -MP -MF $(DEPDIR)/addrconv.Tpo -c -o addrconv.o `test -f 'shmsupp/addrconv.c' || echo '$(srcdir)/'`shmsupp/addrconv.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/addrconv.Tpo $(DEPDIR)/addrconv.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shmsupp/addrconv.c' object='addrconv.o' libtool=no @AMDEPBACKSLASH@
+cpu.o: score/cpu.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cpu.o -MD -MP -MF $(DEPDIR)/cpu.Tpo -c -o cpu.o `test -f 'score/cpu.c' || echo '$(srcdir)/'`score/cpu.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cpu.Tpo $(DEPDIR)/cpu.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='score/cpu.c' object='cpu.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o addrconv.o `test -f 'shmsupp/addrconv.c' || echo '$(srcdir)/'`shmsupp/addrconv.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cpu.o `test -f 'score/cpu.c' || echo '$(srcdir)/'`score/cpu.c
 
-addrconv.obj: shmsupp/addrconv.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT addrconv.obj -MD -MP -MF $(DEPDIR)/addrconv.Tpo -c -o addrconv.obj `if test -f 'shmsupp/addrconv.c'; then $(CYGPATH_W) 'shmsupp/addrconv.c'; else $(CYGPATH_W) '$(srcdir)/shmsupp/addrconv.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/addrconv.Tpo $(DEPDIR)/addrconv.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shmsupp/addrconv.c' object='addrconv.obj' libtool=no @AMDEPBACKSLASH@
+cpu.obj: score/cpu.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cpu.obj -MD -MP -MF $(DEPDIR)/cpu.Tpo -c -o cpu.obj `if test -f 'score/cpu.c'; then $(CYGPATH_W) 'score/cpu.c'; else $(CYGPATH_W) '$(srcdir)/score/cpu.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cpu.Tpo $(DEPDIR)/cpu.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='score/cpu.c' object='cpu.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o addrconv.obj `if test -f 'shmsupp/addrconv.c'; then $(CYGPATH_W) 'shmsupp/addrconv.c'; else $(CYGPATH_W) '$(srcdir)/shmsupp/addrconv.c'; fi`
-
-getcfg.o: shmsupp/getcfg.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT getcfg.o -MD -MP -MF $(DEPDIR)/getcfg.Tpo -c -o getcfg.o `test -f 'shmsupp/getcfg.c' || echo '$(srcdir)/'`shmsupp/getcfg.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/getcfg.Tpo $(DEPDIR)/getcfg.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shmsupp/getcfg.c' object='getcfg.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o getcfg.o `test -f 'shmsupp/getcfg.c' || echo '$(srcdir)/'`shmsupp/getcfg.c
-
-getcfg.obj: shmsupp/getcfg.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT getcfg.obj -MD -MP -MF $(DEPDIR)/getcfg.Tpo -c -o getcfg.obj `if test -f 'shmsupp/getcfg.c'; then $(CYGPATH_W) 'shmsupp/getcfg.c'; else $(CYGPATH_W) '$(srcdir)/shmsupp/getcfg.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/getcfg.Tpo $(DEPDIR)/getcfg.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shmsupp/getcfg.c' object='getcfg.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o getcfg.obj `if test -f 'shmsupp/getcfg.c'; then $(CYGPATH_W) 'shmsupp/getcfg.c'; else $(CYGPATH_W) '$(srcdir)/shmsupp/getcfg.c'; fi`
-
-lock.o: shmsupp/lock.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lock.o -MD -MP -MF $(DEPDIR)/lock.Tpo -c -o lock.o `test -f 'shmsupp/lock.c' || echo '$(srcdir)/'`shmsupp/lock.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lock.Tpo $(DEPDIR)/lock.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shmsupp/lock.c' object='lock.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lock.o `test -f 'shmsupp/lock.c' || echo '$(srcdir)/'`shmsupp/lock.c
-
-lock.obj: shmsupp/lock.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT lock.obj -MD -MP -MF $(DEPDIR)/lock.Tpo -c -o lock.obj `if test -f 'shmsupp/lock.c'; then $(CYGPATH_W) 'shmsupp/lock.c'; else $(CYGPATH_W) '$(srcdir)/shmsupp/lock.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lock.Tpo $(DEPDIR)/lock.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shmsupp/lock.c' object='lock.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lock.obj `if test -f 'shmsupp/lock.c'; then $(CYGPATH_W) 'shmsupp/lock.c'; else $(CYGPATH_W) '$(srcdir)/shmsupp/lock.c'; fi`
-
-mpisr.o: shmsupp/mpisr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mpisr.o -MD -MP -MF $(DEPDIR)/mpisr.Tpo -c -o mpisr.o `test -f 'shmsupp/mpisr.c' || echo '$(srcdir)/'`shmsupp/mpisr.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mpisr.Tpo $(DEPDIR)/mpisr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shmsupp/mpisr.c' object='mpisr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mpisr.o `test -f 'shmsupp/mpisr.c' || echo '$(srcdir)/'`shmsupp/mpisr.c
-
-mpisr.obj: shmsupp/mpisr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mpisr.obj -MD -MP -MF $(DEPDIR)/mpisr.Tpo -c -o mpisr.obj `if test -f 'shmsupp/mpisr.c'; then $(CYGPATH_W) 'shmsupp/mpisr.c'; else $(CYGPATH_W) '$(srcdir)/shmsupp/mpisr.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mpisr.Tpo $(DEPDIR)/mpisr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shmsupp/mpisr.c' object='mpisr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mpisr.obj `if test -f 'shmsupp/mpisr.c'; then $(CYGPATH_W) 'shmsupp/mpisr.c'; else $(CYGPATH_W) '$(srcdir)/shmsupp/mpisr.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cpu.obj `if test -f 'score/cpu.c'; then $(CYGPATH_W) 'score/cpu.c'; else $(CYGPATH_W) '$(srcdir)/score/cpu.c'; fi`
 install-dist_project_libDATA: $(dist_project_lib_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(project_libdir)" || $(MKDIR_P) "$(DESTDIR)$(project_libdir)"
@@ -1155,12 +1159,32 @@ $(PROJECT_INCLUDE)/bspopts.h: include/bspopts.h $(PROJECT_INCLUDE)/$(dirstamp)
 $(PROJECT_INCLUDE)/bsp/bootcard.h: ../../shared/include/bootcard.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/bootcard.h
 
-$(PROJECT_INCLUDE)/coverhd.h: include/coverhd.h $(PROJECT_INCLUDE)/$(dirstamp)
+$(PROJECT_INCLUDE)/coverhd.h: ../../shared/include/coverhd.h $(PROJECT_INCLUDE)/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/coverhd.h
 
 $(PROJECT_LIB)/linkcmds: startup/linkcmds $(PROJECT_LIB)/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_LIB)/linkcmds
 
+$(PROJECT_INCLUDE)/bsp/irq.h: irq/irq.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/irq.h
+
+$(PROJECT_INCLUDE)/bsp/cpu.h: score/cpu.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/cpu.h
+
+$(PROJECT_INCLUDE)/bsp/i386.h: score/i386.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/i386.h
+
+$(PROJECT_INCLUDE)/bsp/interrupts.h: score/interrupts.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/interrupts.h
+
+$(PROJECT_INCLUDE)/bsp/registers.h: score/registers.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/registers.h
+
+$(PROJECT_INCLUDE)/bsp/types.h: score/types.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/types.h
+
+$(PROJECT_INCLUDE)/bsp/idtr.h: score/idtr.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/idtr.h
 preinstall-am: $(PREINSTALL_FILES)
 preinstall: preinstall-am
 .PHONY: preinstall preinstall-am

@@ -116,6 +116,9 @@ void outbyte(
     outbyte( '\r' );
 }
 
+BSP_output_char_function_type BSP_output_char = outbyte;
+BSP_polling_getchar_function_type BSP_poll_char = inbyte;
+
 /*
  *  Open entry point
  */
