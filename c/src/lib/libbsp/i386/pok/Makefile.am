@@ -39,7 +39,7 @@ libbsp_a_SOURCES += console/console.c
 # timer
 libbsp_a_SOURCES += timer/timer.c timer/timerisr.c
 #score
-libbsp_a_SOURCES += score/cpu.c score/cpu_asm.S
+libbsp_a_SOURCES += score/cpu.c score/cpu_asm.c
 
 EXTRA_DIST = times
 
@@ -49,7 +49,6 @@ include $(top_srcdir)/../../../../automake/local.am
 nodist_include_bsp_HEADERS += irq/irq.h
 # score
 nodist_include_bsp_HEADERS += score/cpu.h \
-															score/i386.h \
 															score/interrupts.h \
 															score/registers.h \
 															score/types.h \
