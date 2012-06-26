@@ -25,7 +25,7 @@
  */
 
 #ifndef __RTEMS_ENABLE_HYPERVISOR__
-  /*
+	/*
 	 * functionality of cpukit/score/cpu/ is moved to the appropriate directory
 	 * inside lib/libbsp/
 	 */
