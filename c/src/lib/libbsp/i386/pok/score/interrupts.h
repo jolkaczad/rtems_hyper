@@ -26,4 +26,5 @@
 	 */
 #endif
 
+/* typedefs required by i386/shared/irq/ */
 #endif
