@@ -16,6 +16,7 @@
  *  Applications must not include this file directly.
  */
 
+#define __RTEMS_ENABLE_HYPERVISOR__ 1 /* FIXME */
 #if defined(__RTEMS_ENABLE_HYPERVISOR__)
   /*
 	 * functionality of cpukit/score/cpu/ is moved to the appropriate directory
@@ -85,4 +86,4 @@ typedef int  (*rtems_raw_irq_is_enabled)	(const struct __rtems_raw_irq_connect_d
 
 #endif	/* include guard */
 
-#endif	/* if defined (__RTEMS_EMABLE_HYPREVISOR__) */
+#endif	/* if defined (__RTEMS_ENABLE_HYPREVISOR__) */

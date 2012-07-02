@@ -24,6 +24,7 @@
  *  Applications must not include this file directly.
  */
 
+#define __RTEMS_ENABLE_HYPERVISOR__ 1 /* FIXME */
 #if defined(__RTEMS_ENABLE_HYPERVISOR__)
   /*
 	 * functionality of cpukit/score/cpu/ is moved to the appropriate directory

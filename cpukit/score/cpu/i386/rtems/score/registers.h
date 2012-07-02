@@ -12,6 +12,7 @@
  *  http://www.rtems.com/license/LICENSE.
  */
 
+#define __RTEMS_ENABLE_HYPERVISOR__ 1 /* FIXME */
 #if defined(__RTEMS_ENABLE_HYPERVISOR__)
   /*
 	 * functionality of cpukit/score/cpu/ is moved to the appropriate directory

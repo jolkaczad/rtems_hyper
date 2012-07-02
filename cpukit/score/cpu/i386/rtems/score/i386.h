@@ -13,7 +13,7 @@
  *  found in the file LICENSE in this distribution or at
  *  http://www.rtems.com/license/LICENSE.
  */
-
+#define __RTEMS_ENABLE_HYPERVISOR__ 1 /* FIXME */
 #if defined(__RTEMS_ENABLE_HYPERVISOR__)
   /*
 	 * functionality of cpukit/score/cpu/ is moved to the appropriate directory
@@ -250,4 +250,4 @@ void *i386_Physical_to_logical(
 #endif /* !ASM */
 
 #endif	/* include guard */
-#endif  /* if defined (__RTEMS_EMABLE_HYPREVISOR__) */
+#endif  /* if defined (__RTEMS_ENABLE_HYPREVISOR__) */

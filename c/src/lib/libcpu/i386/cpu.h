@@ -16,6 +16,7 @@
  *  http://www.rtems.com/license/LICENSE.
  */
 
+#define __RTEMS_ENABLE_HYPERVISOR__ 1 /* FIXME */
 #ifndef __RTEMS_ENABLE_HYPERVISOR__
 
 #ifndef _LIBCPU_i386_CPU_H
