@@ -48,8 +48,7 @@ include $(top_srcdir)/../../../../automake/local.am
 
 nodist_include_bsp_HEADERS += irq/irq.h
 # score
-nodist_include_bsp_HEADERS +=
-	score/cpu.h \
+nodist_include_bsp_HEADERS += score/cpu.h \
 	score/interrupts.h \
 	score/registers.h \
 	score/types.h \

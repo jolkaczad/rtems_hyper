@@ -64,10 +64,6 @@ $(PROJECT_INCLUDE)/bsp/cpu.h: score/cpu.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/cpu.h
 PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/cpu.h
 
-$(PROJECT_INCLUDE)/bsp/i386.h: score/i386.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
-	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/i386.h
-PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/i386.h
-
 $(PROJECT_INCLUDE)/bsp/interrupts.h: score/interrupts.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/interrupts.h
 PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/interrupts.h
@@ -83,4 +79,8 @@ PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/types.h
 $(PROJECT_INCLUDE)/bsp/idtr.h: score/idtr.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/idtr.h
 PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/idtr.h
+
+$(PROJECT_INCLUDE)/bsp/i386.h: score/i386.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/i386.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/i386.h
 
