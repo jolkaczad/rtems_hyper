@@ -31,7 +31,8 @@ libbsp_a_SOURCES += ../../shared/bspclean.c ../../shared/bsplibc.c \
     ../../shared/bsppretaskinghook.c ../../shared/bsppredriverhook.c \
     ../../shared/bspgetworkarea.c ../../shared/bsppost.c \
     startup/bspstart.c ../../shared/bootcard.c ../../shared/sbrk.c \
-    startup/setvec.c ../../shared/gnatinstallhandler.c ../../shared/bspreset.c
+    startup/setvec.c ../../shared/gnatinstallhandler.c ../../shared/bspreset.c \
+		start/start.c
 # clock
 libbsp_a_SOURCES += clock/ckinit.c
 # console
@@ -54,3 +55,6 @@ nodist_include_bsp_HEADERS += score/cpu.h \
 	score/types.h \
 	score/idtr.h \
 	score/i386.h
+
+# start
+nodist_include_bsp_HEADERS += start/poksyscalls.h

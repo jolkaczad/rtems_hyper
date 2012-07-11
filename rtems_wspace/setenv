@@ -1,0 +1,7 @@
+export PATH=/usr/lib/qt-3.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/rtems/bin
+
+export PATH=/home/rtems/rtems-4.11-work/rtems-testing/bin:${PATH}
+export PATH=/opt/rtems-4.11/bin:${PATH}
+
+export r=/home/rtems/rtems-4.11-work/rtems/
+export b=${r}/c/src/lib/libbsp

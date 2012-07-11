@@ -84,3 +84,7 @@ $(PROJECT_INCLUDE)/bsp/i386.h: score/i386.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/i386.h
 PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/i386.h
 
+$(PROJECT_INCLUDE)/bsp/poksyscalls.h: start/poksyscalls.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/poksyscalls.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/poksyscalls.h
+

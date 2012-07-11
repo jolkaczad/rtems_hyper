@@ -1,0 +1,29 @@
+*** TEST ID 01 ***
+getegid = 0
+getgid = 0
+setgid(5)
+getegid = 0
+getgid = 5
+setpgid(getpid(), 10) - ENOSYS
+
+geteuid = 0
+getuid = 0
+setuid(5)
+geteuid = 0
+getuid = 5
+
+getpid = 1
+__getpid = 1
+getppid = 0
+setsid - EPERM
+getpgrp - return local node - OK
+getpgrp returned 1
+getgroups - return 0 - OK
+
+setuid(5)
+getlogin() -- ()
+setuid(0)
+getlogin() -- (root)
+getlogin_r(NULL, LOGIN_NAME_MAX) -- EFAULT
+getlogin_r(buffer, 0) -- ERANGE
+*** END OF TEST ID 01 ***

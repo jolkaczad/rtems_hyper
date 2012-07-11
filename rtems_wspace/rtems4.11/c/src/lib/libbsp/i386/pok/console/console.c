@@ -15,6 +15,7 @@
 
 #include <bsp.h>
 #include <rtems/libio.h>
+#include <bsp/poksyscalls.h>
 
 /*  console_initialize
  *
@@ -107,6 +108,8 @@ void outbyte(
    *  Check for flow control requests and process.
    *  Then output the character.
    */
+
+	pok_syscall2 (POK_SYSCALL_CONSWRITE, (uint32_t)&ch, 1);
 
   /*
    *  Carriage Return/New line translation.

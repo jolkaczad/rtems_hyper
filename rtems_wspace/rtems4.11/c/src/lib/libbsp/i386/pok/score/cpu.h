@@ -778,7 +778,6 @@ SCORE_EXTERN Context_Control_fp  _CPU_Null_fp_context;
  */
 #define _CPU_ISR_Disable( _isr_cookie ) \
   { \
-    (_isr_cookie) = 0;   /* do something to prevent warnings */ \
   }
 
 /**

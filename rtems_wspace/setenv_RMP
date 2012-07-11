@@ -1,0 +1,1 @@
+export RTEMS_MAKEFILE_PATH=$RTEMS_ROOT_PATH/b-pok/i386-rtems4.11/pok
