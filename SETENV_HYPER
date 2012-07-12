@@ -1,0 +1,3 @@
+export RTEMS_WSPACE_PATH=`pwd`/rtems_wspace
+export POK_WSPACE_PATH=`pwd`/pok_wspace
+export POK_PATH=$POK_WSPACE_PATH/pok-20120509
