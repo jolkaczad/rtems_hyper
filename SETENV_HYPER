@@ -1,3 +1,4 @@
 export RTEMS_WSPACE_PATH=`pwd`/rtems_wspace
 export POK_WSPACE_PATH=`pwd`/pok_wspace
 export POK_PATH=$POK_WSPACE_PATH/pok-20120509
+export RTEMS_MAKEFILE_PATH=$RTEMS_WSPACE_PATH/b-pok/install/i386-rtems4.11/pok

@@ -12,60 +12,58 @@ POK_PATH path to the main POK directory inside pok_root
 POK_WSPACE_PATH 'pok_root' directory
 
 to set these up, SETENV_HYPER can be sourced from inside the rtems-hyper directory
+$ source SETENV_HYPER
 
 INSTRUCTIONS
 
-1. Apply patch to RTEMS directory tree
+1. run ./bootstrap inside the $RTEMS_WSPACE_PATH/rtems4.11 directory
 $ cd $RTEMS_WSPACE_PATH/rtems4.11
-$ patch -p1 < ../2012071120_rp.patch
-
-2. run ./bootstrap inside the $RTEMS_WSPACE_PATH/rtems4.11 directory
 $ ./bootstrap
 
-3. b-pok will be the build directory, the configuration script will be
+2. b-pok will be the build directory, the configuration script will be
 invoked from inside.
 $ cd ../b-pok
 $ ../rtems4.11/configure --target=i386-rtems4.11 --disable-cxx \
 --disable-networking --disable-posix --enable-rtemsbsp=pok --disable-tests \
 --prefix=$RTEMS_WSPACE_PATH/b-pok/install ENABLE_HYPERVISOR=1
 
-4. build and install
+3. build and install
 $ make && make install
 
-5. configure and compile POK
+4. configure and compile POK
 $ cd $POK_PATH
 $ make configure
 
-6. compile the example on POK part producing libpok.a which will be linked
+5. compile the example on POK part producing libpok.a which will be linked
 against
 $ cd $POK_WSPACE_PATH/partitions-threads_rtems
 $ make
 
-7. set the makefile path variable required to compile the example on RTEMS
+6. if not done before, set the makefile path variable required to compile the example on RTEMS
 $ export RTEMS_MAKEFILE_PATH=$RTEMS_WSPACE_PATH/b-pok/install/i386-rtems4.11/pok
 
-8. compile the example. The compilation will break during linking
+7. compile the example. The compilation will break during linking
 with "undefined reference to `pok_do_syscall'" because the original Makefile
 doesn't link against libpok.a; it will produce the required test.o file though
 $ cd $RTEMS_WSPACE_PATH/hello_world_c
 $ make
 
-9. complete linking the hello.ralf file using a custom collect2 script;
+8. complete linking the hello.ralf file using a custom collect2 script;
 some paths for libraries and executables are unfortunately hardcoded, 
 may require tuning
 $ ./collect_script.sh
 
-10. copy the rtems image into the POK directory so that it can be included in a
+9. copy the rtems image into the POK directory so that it can be included in a
 partition
 $ cp -v ./o-optimize/hello.ralf $POK_WSPACE_PATH/partitions-threads_rtems/
 
-11. substiute the original executable created by the standard example
+10. substiute the original executable created by the standard example
 compilation process with an image containing a real POK "hello world partition"
 and a RTEMS partition using a dedicated script emulating the work of a Makefile
 $ cd $POK_WSPACE_PATH/partitions-threads_rtems
 $ ./pokrtems_combine.sh generated-code/cpu/part1/part1.elf hello.ralf
 
-12. verify the process by running the compiled elf file inside QEMU; expected
+11. verify the process by running the compiled elf file inside QEMU; expected
 output is one partition printing hello world messages and the other printing
 a "RTEMS bsp_start()" first (using a direct system call to POK),
 and "RTEMS printk()" later (produced by RTEMS' printk()) both coming

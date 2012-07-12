@@ -2,8 +2,16 @@ aclocal.m4
 autom4te.cache
 configure
 Makefile.in
+.depend
+
+bspopts.h.in
+*.mk
+
 *.o
 *.exe
 *.elf
+*.ralf
 *.a
 *.lo
+
+*.swp
