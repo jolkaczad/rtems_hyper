@@ -52,5 +52,5 @@ void bsp_start( void )
 	/* there are some issues to be resolved inside boot_card() before
 	 * we can continue with fully starting up the system.
 	 */
-	while (1);
+/*	while (1); */
 }

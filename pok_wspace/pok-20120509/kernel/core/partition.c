@@ -404,6 +404,13 @@ pok_ret_t pok_current_partition_get_start_condition (pok_start_condition_t *star
   return POK_ERRNO_OK;
 }
 
+pok_ret_t pok_current_partition_get_memory_info (uint32_t *size, uint32_t *base_vaddr)
+{
+	*size = POK_CURRENT_PARTITION.size;
+	*base_vaddr = POK_CURRENT_PARTITION.base_vaddr;
+	return POK_ERRNO_OK;
+}
+
 #ifdef POK_NEEDS_ERROR_HANDLING
 
 /**

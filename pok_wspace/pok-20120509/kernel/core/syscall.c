@@ -171,6 +171,9 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
       case POK_SYSCALL_PARTITION_GET_START_CONDITION:
 	return pok_current_partition_get_start_condition ((pok_start_condition_t*)(args->arg1 + infos->base_addr));
          break;
+			case POK_SYSCALL_PARTITION_GET_MEMORY_INFO:
+	return pok_current_partition_get_memory_info ((uint32_t*)(args->arg1 + infos->base_addr), (uint32_t*)(args->arg2 + infos->base_addr));
+				 break;
 #endif
 
 #ifdef POK_NEEDS_ERROR_HANDLING

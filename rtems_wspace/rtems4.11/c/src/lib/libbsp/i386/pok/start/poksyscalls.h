@@ -53,6 +53,8 @@ typedef enum
 typedef enum
 {
 	POK_SYSCALL_CONSWRITE	=	10,
+
+	POK_SYSCALL_PARTITION_GET_MEMORY_INFO = 411,
 	/*
 	 * ***
 	 */

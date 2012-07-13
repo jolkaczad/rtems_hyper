@@ -54,14 +54,14 @@ process implementation myprocess.impl1
 subcomponents
    thr1 : thread mythread.impl1;
 properties
-   POK::Needed_Memory_Size => 120 Kbyte;
+   POK::Needed_Memory_Size => 240 Kbyte;
 end myprocess.impl1;
 
 process implementation myprocess.impl2
 subcomponents
    thr2 : thread mythread.impl2;
 properties
-   POK::Needed_Memory_Size => 120 Kbyte;
+   POK::Needed_Memory_Size => 240 Kbyte;
 end myprocess.impl2;
 
 thread mythread

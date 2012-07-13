@@ -168,6 +168,8 @@ pok_ret_t pok_current_partition_get_lock_level (uint32_t *lock_level);
 
 pok_ret_t pok_current_partition_get_start_condition (pok_start_condition_t *start_condition);
 
+pok_ret_t pok_current_partition_get_memory_info (uint32_t *size, uint32_t *base_vaddr);
+
 #endif /* __POK_NEEDS_PARTITIONS */
 
 #endif /* __POK_PARTITION_H__ */

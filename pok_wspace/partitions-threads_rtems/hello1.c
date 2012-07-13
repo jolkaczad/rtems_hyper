@@ -14,7 +14,7 @@
  * Created by julien on Thu Jan 15 23:34:13 2009 
  */
 
-/* #include <libc/stdio.h> */
+#include <libc/stdio.h>
 #include <types.h>
 /* #include <core/syscall.h> */
 
@@ -66,7 +66,9 @@ typedef enum
 
 typedef enum
 {
-	POK_SYSCALL_CONSWRITE	=	10,
+	POK_SYSCALL_CONSWRITE			= 10,
+	
+	POK_SYSCALL_PARTITION_GET_MEMORY_INFO	= 411,
 	/*
 	 * ***
 	 */
@@ -116,9 +118,15 @@ void user_hello_part1 ()
 	/*
 	printf( "[PART1] Hello Worlds\n");
 	*/
+	uint32_t size;
+	uint32_t base_vaddr;
 	
 	char buff[] = {"[PART1] Hello Worlds\n"};
 	int pos = sizeof (buff);	
 
 	pok_syscall2 (POK_SYSCALL_CONSWRITE, (uint32_t)buff, pos);
+
+	pok_syscall2 (POK_SYSCALL_PARTITION_GET_MEMORY_INFO, (uint32_t)&size, (uint32_t)&base_vaddr); 
+
+	printf ("size: %u, base_vadd: %u\n");
 }

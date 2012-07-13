@@ -206,12 +206,13 @@ uint32_t boot_card(
   #if (BSP_DIRTY_MEMORY == 1)
     memset( work_area_start, 0xCF,  work_area_size );
   #endif
-
   /*
    *  Initialize RTEMS data structures
    */
   rtems_initialize_data_structures();
 
+  printk("while(1);\n");
+  while(1);
   /*
    *  Initialize the C library for those BSPs using the shared
    *  framework.

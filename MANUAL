@@ -7,9 +7,9 @@ was prepared on a Centos 6 VirtualBox available from the RTEMS website.
 
 ENVIRONMENT VARIABLES
 
-RTEMS_WSPACE_PATH path to the 'rtems_root' directory
+RTEMS_WSPACE_PATH path to the 'rtems_wspace' directory
 POK_PATH path to the main POK directory inside pok_root
-POK_WSPACE_PATH 'pok_root' directory
+POK_WSPACE_PATH 'pok_wspace' directory
 
 to set these up, SETENV_HYPER can be sourced from inside the rtems-hyper directory
 $ source SETENV_HYPER
