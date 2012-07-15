@@ -36,6 +36,9 @@ extern "C" {
   { \
   }
 
+
+
+#define	BSP_DEFAULT_UNIFIED_WORK_AREAS 1
 /* functions */
 
 rtems_isr_entry set_vector(                    /* returns old vector */

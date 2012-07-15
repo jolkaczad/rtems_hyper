@@ -211,12 +211,11 @@ uint32_t boot_card(
    */
   rtems_initialize_data_structures();
 
-  printk("while(1);\n");
-  while(1);
   /*
    *  Initialize the C library for those BSPs using the shared
    *  framework.
    */
+  printk("checkpoint(3);\n");
   bootcard_bsp_libc_helper(
     work_area_start,
     work_area_size,
@@ -224,6 +223,8 @@ uint32_t boot_card(
     heap_size,
     sbrk_amount
   );
+  printk("while(1);\n");
+  while(1);
 
   /*
    *  Let the BSP do any required initialization now that RTEMS
