@@ -7,24 +7,26 @@ RamSize = DEFINED(RamSize) ? RamSize    :
 ENTRY(_start)
 SECTIONS
 {
-	. = 0x0;
-
-	__partition_begin = . ;
-
-	.text :
-	{
-		*(.text)
-	}
-
-	.rodata :
-	{
-		*(.rodata)
-	}
-
-	.data :
-	{
-		*(.data) *(.bss) *(COMMON)
-	}
-	WorkAreaBase = .;
-	__partition_end = . ;
+  /* . = 0x0;*/
+  
+  ELFBase = .;
+  __partition_begin = . ;
+  textBase = .;
+  .text :
+  {
+    *(.text)
+  }
+  
+  rodataBase = .;
+  .rodata :
+  {
+    *(.rodata)
+  }
+  dataBase = .;
+  .data :
+  {
+    *(.data) *(.bss) *(COMMON)
+  }
+  WorkAreaBase = .;
+  __partition_end = . ;
 } 

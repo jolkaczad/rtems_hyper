@@ -31,6 +31,8 @@ rtems_task Init(
 
 #define CONFIGURE_INIT
 
+
+#define CONFIGURE_APPLICATION_DISABLE_FILESYSTEM 
 #include <rtems/confdefs.h>
 
 /* end of file */

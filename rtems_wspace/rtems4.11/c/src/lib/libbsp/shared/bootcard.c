@@ -95,6 +95,7 @@ static void bootcard_bsp_libc_helper(
     }
   }
 
+  printk("heap_start: 0x%x\nheap_size: 0x%x\n", heap_start, heap_size);
   bsp_libc_init(heap_start, heap_size, sbrk_amount);
 }
 
@@ -223,8 +224,6 @@ uint32_t boot_card(
     heap_size,
     sbrk_amount
   );
-  printk("while(1);\n");
-  while(1);
 
   /*
    *  Let the BSP do any required initialization now that RTEMS
@@ -262,17 +261,18 @@ uint32_t boot_card(
    *        shared stub.
    */
   bsp_predriver_hook();
-
+  printk ("checkpoint 4\n");
   /*
    *  Initialize all device drivers.
    */
   rtems_initialize_device_drivers();
-
+  printk ("checkpoint 5\n");
   /*
    *  Invoke the postdriver hook.  This normally opens /dev/console
    *  for use as stdin, stdout, and stderr.
    */
   bsp_postdriver_hook();
+  printk ("checkpoint 6\n");
 
   /*
    *  Complete initialization of RTEMS and switch to the first task.
@@ -280,6 +280,8 @@ uint32_t boot_card(
    */
   status = rtems_initialize_start_multitasking();
 
+  printk("while(1);\n");
+  while(1);
   /***************************************************************
    ***************************************************************
    *  APPLICATION RUNS HERE!!!  When it shuts down, we return!!! *
