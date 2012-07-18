@@ -74,6 +74,7 @@ rtems_status_code rtems_task_create(
   ASR_Information         *asr;
 
 
+  printk("task create checkpoint 1\n");
   if ( !id )
    return RTEMS_INVALID_ADDRESS;
 
@@ -103,6 +104,7 @@ rtems_status_code rtems_task_create(
   else
     is_fp = false;
 
+  printk("task create checkpoint 2\n");
   /*
    *  Validate the RTEMS API priority and convert it to the core priority range.
    */
@@ -112,6 +114,7 @@ rtems_status_code rtems_task_create(
       return RTEMS_INVALID_PRIORITY;
   }
 
+  printk("task create checkpoint 3\n");
   core_priority = _RTEMS_tasks_Priority_to_Core( initial_priority );
 
 #if defined(RTEMS_MULTIPROCESSING)
@@ -130,11 +133,13 @@ rtems_status_code rtems_task_create(
    *  Make sure system is MP if this task is global
    */
 
+  printk("task create checkpoint 4\n");
   /*
    *  Lock the allocator mutex for protection
    */
   _RTEMS_Lock_allocator();
 
+  printk("task create checkpoint 5\n");
   /*
    *  Allocate the thread control block and -- if the task is global --
    *  allocate a global object control block.
@@ -145,6 +150,7 @@ rtems_status_code rtems_task_create(
    *         the event of an error.
    */
 
+  printk("task create checkpoint 6\n");
   the_thread = _RTEMS_tasks_Allocate();
 
   if ( !the_thread ) {
@@ -152,6 +158,7 @@ rtems_status_code rtems_task_create(
     return RTEMS_TOO_MANY;
   }
 
+  printk("task create checkpoint 7\n");
 #if defined(RTEMS_MULTIPROCESSING)
   if ( is_global ) {
     the_global_object = _Objects_MP_Allocate_global_object();
@@ -168,6 +175,7 @@ rtems_status_code rtems_task_create(
    *  Initialize the core thread for this task.
    */
 
+  printk("task create checkpoint 8\n");
   status = _Thread_Initialize(
     &_RTEMS_tasks_Information,
     the_thread,
@@ -184,6 +192,7 @@ rtems_status_code rtems_task_create(
     (Objects_Name) name
   );
 
+  printk("task create checkpoint 9\n");
   if ( !status ) {
 #if defined(RTEMS_MULTIPROCESSING)
     if ( is_global )
@@ -194,6 +203,7 @@ rtems_status_code rtems_task_create(
     return RTEMS_UNSATISFIED;
   }
 
+  printk("task create checkpoint 13\n");
   api = the_thread->API_Extensions[ THREAD_API_RTEMS ];
   asr = &api->Signal;
 
@@ -221,6 +231,8 @@ rtems_status_code rtems_task_create(
    }
 #endif
 
+  printk("task create checkpoint 14\n");
   _RTEMS_Unlock_allocator();
+  printk("task create checkpoint 15\n");
   return RTEMS_SUCCESSFUL;
 }

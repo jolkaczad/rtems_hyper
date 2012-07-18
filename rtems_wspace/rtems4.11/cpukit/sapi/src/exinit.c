@@ -205,7 +205,6 @@ void rtems_initialize_device_drivers(void)
    */
 
   _IO_Initialize_all_drivers();
-
   #if defined(RTEMS_MULTIPROCESSING)
     if ( _System_state_Is_multiprocessing ) {
       _MPCI_Initialization();
@@ -220,7 +219,10 @@ void rtems_initialize_device_drivers(void)
    *
    *  The API extensions are supposed to create user initialization tasks.
    */
+
+  printk("exinit.c checkpoint 4\n");
   _API_extensions_Run_postdriver();
+  printk("exinit.c checkpoint 5\n");
 }
 
 uint32_t rtems_initialize_start_multitasking(void)
