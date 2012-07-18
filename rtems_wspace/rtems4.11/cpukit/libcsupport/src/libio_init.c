@@ -49,13 +49,14 @@ void rtems_libio_init( void )
     rtems_status_code rc;
     uint32_t i;
     rtems_libio_t *iop;
-
+    
     if (rtems_libio_number_iops > 0)
     {
         rtems_libio_iops = (rtems_libio_t *) calloc(rtems_libio_number_iops,
                                                     sizeof(rtems_libio_t));
-        if (rtems_libio_iops == NULL)
+        if (rtems_libio_iops == NULL){
             rtems_fatal_error_occurred(RTEMS_NO_MEMORY);
+        }
 
         iop = rtems_libio_iop_freelist = rtems_libio_iops;
         for (i = 0 ; (i + 1) < rtems_libio_number_iops ; i++, iop++)
@@ -75,13 +76,14 @@ void rtems_libio_init( void )
     RTEMS_NO_PRIORITY,
     &rtems_libio_semaphore
   );
-  if ( rc != RTEMS_SUCCESSFUL )
+  if ( rc != RTEMS_SUCCESSFUL ){
+    printk("rc != RTEMS_SUCCESSFUL\n");
     rtems_fatal_error_occurred( rc );
+  }
 
   /*
    *  Initialize the base file system infrastructure.
    */
-
   if (rtems_fs_init_helper)
      (* rtems_fs_init_helper)();
 }

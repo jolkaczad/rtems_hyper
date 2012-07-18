@@ -42,9 +42,11 @@ rtems_device_driver console_initialize(
     (rtems_device_minor_number) 0
   );
 
-  if (status != RTEMS_SUCCESSFUL)
+  if (status != RTEMS_SUCCESSFUL){
+    printk ("console init FAIL\n");
     rtems_fatal_error_occurred(status);
-
+  }
+  printk ("console init OK\n");
   return RTEMS_SUCCESSFUL;
 }
 

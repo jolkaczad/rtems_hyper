@@ -26,7 +26,6 @@ void *calloc(
   size_t length;
 
   MSBUMP(calloc_calls, 1);
-
   length = nelem * elsize;
   cptr = malloc( length );
   if ( cptr )

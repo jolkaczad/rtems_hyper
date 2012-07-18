@@ -26,6 +26,7 @@ void open_dev_console(void)
   int      stdout_fd;
   int      stderr_fd;
 
+  printk("checkpoint 8x\n");
   /*
    * Attempt to open /dev/console.
    */
@@ -33,6 +34,7 @@ void open_dev_console(void)
     /*
      * There may not be a console driver so this is OK.
      */
+    printk("checkpoint 9\n");
     return;
   }
 
@@ -40,10 +42,15 @@ void open_dev_console(void)
    *  But if we find /dev/console once, we better find it twice more
    *  or something is REALLY wrong.
    */
-  if ((stdout_fd = open("/dev/console", O_WRONLY, 0)) == -1)
+  printk("checkpoint 10\n");
+  if ((stdout_fd = open("/dev/console", O_WRONLY, 0)) == -1){
+    printk("checkpoint 11\n");
     rtems_fatal_error_occurred( 0x55544431 );  /* error STD1 */
+  }
 
-  if ((stderr_fd = open("/dev/console", O_WRONLY, 0)) == -1)
+  if ((stderr_fd = open("/dev/console", O_WRONLY, 0)) == -1){
+    printk("checkpoint 12\n");
     rtems_fatal_error_occurred( 0x55544432 );  /* error STD2 */
+  }
 }
 

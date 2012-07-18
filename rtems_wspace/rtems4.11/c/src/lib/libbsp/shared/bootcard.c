@@ -216,7 +216,7 @@ uint32_t boot_card(
    *  Initialize the C library for those BSPs using the shared
    *  framework.
    */
-  printk("checkpoint(3);\n");
+   
   bootcard_bsp_libc_helper(
     work_area_start,
     work_area_size,
@@ -245,13 +245,15 @@ uint32_t boot_card(
   #ifdef RTEMS_DEBUG
     rtems_debug_enable( RTEMS_DEBUG_ALL_MASK );
   #endif
-
+  
   /*
    *  Let RTEMS perform initialization it requires before drivers
    *  are allowed to be initialized.
    */
+
   rtems_initialize_before_drivers();
 
+  printk("checkpoint 1\n");
   /*
    *  Execute BSP specific pre-driver hook. Drivers haven't gotten
    *  to initialize yet so this is a good chance to initialize
@@ -261,27 +263,25 @@ uint32_t boot_card(
    *        shared stub.
    */
   bsp_predriver_hook();
-  printk ("checkpoint 4\n");
+  printk("checkpoint 2\n");
   /*
    *  Initialize all device drivers.
    */
   rtems_initialize_device_drivers();
-  printk ("checkpoint 5\n");
+  printk("checkpoint 3\n");
   /*
    *  Invoke the postdriver hook.  This normally opens /dev/console
    *  for use as stdin, stdout, and stderr.
    */
   bsp_postdriver_hook();
-  printk ("checkpoint 6\n");
-
+  printk("while(1);\n");
+  while(1);
   /*
    *  Complete initialization of RTEMS and switch to the first task.
    *  Global C++ constructors will be executed in the context of that task.
    */
   status = rtems_initialize_start_multitasking();
 
-  printk("while(1);\n");
-  while(1);
   /***************************************************************
    ***************************************************************
    *  APPLICATION RUNS HERE!!!  When it shuts down, we return!!! *

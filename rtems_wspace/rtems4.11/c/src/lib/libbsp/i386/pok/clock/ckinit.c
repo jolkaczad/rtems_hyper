@@ -132,6 +132,7 @@ rtems_device_driver Clock_initialize(
   void *pargp
 )
 {
+  printk("clock init start\n");
   Install_clock( Clock_isr );
 
   /*

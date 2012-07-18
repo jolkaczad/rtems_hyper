@@ -67,11 +67,11 @@ void bsp_get_work_area(
   #ifdef BSP_INTERRUPT_STACK_AT_WORK_AREA_BEGIN
     work_base += Configuration.interrupt_stack_size;
   #endif
-  
+
   pok_syscall3 (POK_SYSCALL_PARTITION_GET_MEMORY_INFO, (uint32_t)&size, (uint32_t)&base_addr, (uint32_t)&pok_stack_size);
 
-  *work_area_start = (void *) work_base;
-  *work_area_size  = size - work_base;
+  *work_area_start = (void *) work_base + pok_stack_size;
+  *work_area_size  = size - work_base - pok_stack_size;
   *heap_start      = BSP_BOOTCARD_HEAP_USES_WORK_AREA;
   *heap_size       = (uintptr_t) HeapSize;
 
