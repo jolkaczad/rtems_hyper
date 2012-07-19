@@ -274,8 +274,6 @@ uint32_t boot_card(
    *  for use as stdin, stdout, and stderr.
    */
   bsp_postdriver_hook();
-  printk("while(1);\n");
-  while(1);
   /*
    *  Complete initialization of RTEMS and switch to the first task.
    *  Global C++ constructors will be executed in the context of that task.
@@ -289,6 +287,8 @@ uint32_t boot_card(
    ***************************************************************
    */
 
+  printk("while(1);\n");
+  while(1);
   /*
    *  Perform any BSP specific shutdown actions which are written in C.
    */

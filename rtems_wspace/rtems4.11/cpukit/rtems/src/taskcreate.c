@@ -73,8 +73,6 @@ rtems_status_code rtems_task_create(
   RTEMS_API_Control       *api;
   ASR_Information         *asr;
 
-
-  printk("task create checkpoint 1\n");
   if ( !id )
    return RTEMS_INVALID_ADDRESS;
 
@@ -104,7 +102,6 @@ rtems_status_code rtems_task_create(
   else
     is_fp = false;
 
-  printk("task create checkpoint 2\n");
   /*
    *  Validate the RTEMS API priority and convert it to the core priority range.
    */
@@ -114,7 +111,6 @@ rtems_status_code rtems_task_create(
       return RTEMS_INVALID_PRIORITY;
   }
 
-  printk("task create checkpoint 3\n");
   core_priority = _RTEMS_tasks_Priority_to_Core( initial_priority );
 
 #if defined(RTEMS_MULTIPROCESSING)
@@ -133,13 +129,11 @@ rtems_status_code rtems_task_create(
    *  Make sure system is MP if this task is global
    */
 
-  printk("task create checkpoint 4\n");
   /*
    *  Lock the allocator mutex for protection
    */
   _RTEMS_Lock_allocator();
 
-  printk("task create checkpoint 5\n");
   /*
    *  Allocate the thread control block and -- if the task is global --
    *  allocate a global object control block.

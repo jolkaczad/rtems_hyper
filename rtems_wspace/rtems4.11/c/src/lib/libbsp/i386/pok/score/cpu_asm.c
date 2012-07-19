@@ -51,6 +51,7 @@ void _CPU_Context_save_fp(
   Context_Control_fp **fp_context_ptr
 )
 {
+  printk("_cpu_context_save_fp\n");
 }
 
 /*
@@ -90,6 +91,7 @@ void _CPU_Context_switch(
   Context_Control  *heir
 )
 {
+  printk("_cpu_context_switch\n");
 }
 
 /*

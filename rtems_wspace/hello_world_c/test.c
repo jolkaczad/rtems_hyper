@@ -8,6 +8,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+void fun(int *a)
+{
+  int b;
+  *a++;
+  b = *a;
+  return;
+}
 
 rtems_task Init(
   rtems_task_argument ignored
