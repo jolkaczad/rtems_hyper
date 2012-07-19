@@ -43,10 +43,8 @@ rtems_device_driver console_initialize(
   );
 
   if (status != RTEMS_SUCCESSFUL){
-    printk ("console init FAIL\n");
     rtems_fatal_error_occurred(status);
   }
-  printk ("console init OK\n");
   return RTEMS_SUCCESSFUL;
 }
 

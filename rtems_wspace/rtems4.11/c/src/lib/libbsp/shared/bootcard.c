@@ -95,7 +95,6 @@ static void bootcard_bsp_libc_helper(
     }
   }
 
-  printk("heap_start: 0x%x\nheap_size: 0x%x\n", heap_start, heap_size);
   bsp_libc_init(heap_start, heap_size, sbrk_amount);
 }
 
@@ -250,10 +249,7 @@ uint32_t boot_card(
    *  Let RTEMS perform initialization it requires before drivers
    *  are allowed to be initialized.
    */
-
   rtems_initialize_before_drivers();
-
-  printk("checkpoint 1\n");
   /*
    *  Execute BSP specific pre-driver hook. Drivers haven't gotten
    *  to initialize yet so this is a good chance to initialize
@@ -263,12 +259,10 @@ uint32_t boot_card(
    *        shared stub.
    */
   bsp_predriver_hook();
-  printk("checkpoint 2\n");
   /*
    *  Initialize all device drivers.
    */
   rtems_initialize_device_drivers();
-  printk("checkpoint 3\n");
   /*
    *  Invoke the postdriver hook.  This normally opens /dev/console
    *  for use as stdin, stdout, and stderr.

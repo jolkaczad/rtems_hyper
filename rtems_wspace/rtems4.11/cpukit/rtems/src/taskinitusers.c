@@ -51,7 +51,6 @@ void _RTEMS_tasks_Initialize_user_tasks_body( void )
   rtems_status_code                 return_value;
   rtems_initialization_tasks_table *user_tasks;
 
-  printk("_rtems tasks init usr tasks body checkpoint 1\n");
   /*
    *  Move information into local variables
    */
@@ -61,17 +60,13 @@ void _RTEMS_tasks_Initialize_user_tasks_body( void )
   /*
    *  Verify that we have a set of user tasks to iterate
    */
-  if ( !user_tasks ){
-    printk("_rtems tasks !user_tasks\n");
+  if ( !user_tasks )
     return;
-  }
 
-  printk("_rtems tasks init usr tasks body checkpoint 2\n");
   /*
    *  Now iterate over the initialization tasks and create/start them.
    */
   for ( index=0 ; index < maximum ; index++ ) {
-    printk("_rtems tasks init usr tasks body checkpoint 3\n");
     return_value = rtems_task_create(
       user_tasks[ index ].name,
       user_tasks[ index ].initial_priority,
@@ -80,22 +75,15 @@ void _RTEMS_tasks_Initialize_user_tasks_body( void )
       user_tasks[ index ].attribute_set,
       &id
     );
-    printk("_rtems tasks init usr tasks body checkpoint 4\n");
-    if ( !rtems_is_status_successful( return_value ) ){
-      printk("_rtems tasks internal error 1\n");
+    if ( !rtems_is_status_successful( return_value ) )
       _Internal_error_Occurred( INTERNAL_ERROR_RTEMS_API, true, return_value );
-    }
 
-    printk("_rtems tasks init usr tasks body checkpoint 5\n");
     return_value = rtems_task_start(
       id,
       user_tasks[ index ].entry_point,
       user_tasks[ index ].argument
     );
-    printk("_rtems tasks init usr tasks body checkpoint 6\n");
-    if ( !rtems_is_status_successful( return_value ) ){
+    if ( !rtems_is_status_successful( return_value ) )
       _Internal_error_Occurred( INTERNAL_ERROR_RTEMS_API, true, return_value );
-    }
-    printk("_rtems tasks init usr tasks body checkpoint 7\n");
   }
 }

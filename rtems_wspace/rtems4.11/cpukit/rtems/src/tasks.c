@@ -260,7 +260,7 @@ void _RTEMS_tasks_Manager_initialization(void)
   /*
    *  Add all the extensions for this API
    */
-  printk("tasks manager init\n");
+
   _User_extensions_Add_API_set( &_RTEMS_tasks_User_extensions );
 
   _API_extensions_Add( &_RTEMS_tasks_API_extensions );
@@ -291,8 +291,6 @@ void _RTEMS_tasks_Manager_initialization(void)
 
 void _RTEMS_tasks_Initialize_user_tasks( void )
 {
-  printk("initializeusertasks checkpoint 1\n");
   if ( _RTEMS_tasks_Initialize_user_tasks_p )
     (*_RTEMS_tasks_Initialize_user_tasks_p)();
-  printk("initializeusertaskssad checkpoint 2\n");
 }

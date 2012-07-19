@@ -13,7 +13,7 @@
  *  http://www.rtems.com/license/LICENSE.
  */
 
-#define BSP_GET_WORK_AREA_DEBUG
+/* #define BSP_GET_WORK_AREA_DEBUG */
 
 #include <bsp.h>
 #include <bsp/bootcard.h>

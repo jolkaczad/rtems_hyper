@@ -46,11 +46,4 @@ void bsp_start( void )
   pos = sizeof (buff);  /* strlen ("buff[]"); */
 
   pok_syscall2 (POK_SYSCALL_CONSWRITE, (uint32_t)buff, pos);
-
-  printk ("RTEMS printk()\n");
-
-  /* there are some issues to be resolved inside boot_card() before
-   * we can continue with fully starting up the system.
-   */
-/*  while (1); */
 }

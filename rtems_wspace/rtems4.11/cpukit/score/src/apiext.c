@@ -67,14 +67,13 @@ void _API_extensions_Run_postdriver( void )
 {
   Chain_Node             *the_node;
   API_extensions_Control *the_extension;
-  printk("apiext checkpoint 1\n");
+
   for ( the_node = _Chain_First( &_API_extensions_List );
         !_Chain_Is_tail( &_API_extensions_List, the_node ) ;
         the_node = the_node->next ) {
-    printk("apiext checkpoint 2\n");
 
     the_extension = (API_extensions_Control *) the_node;
-    printk("apiext checkpoint 3\n");
+
     /*
      *  Currently all APIs configure this hook so it is always non-NULL.
      */
@@ -82,9 +81,7 @@ void _API_extensions_Run_postdriver( void )
     if ( the_extension->postdriver_hook )
 #endif
       (*the_extension->postdriver_hook)();
-    printk("apiext checkpoint 4\n");
   }
-  printk("apiext checkpoint 5\n");
 }
 
 /*
