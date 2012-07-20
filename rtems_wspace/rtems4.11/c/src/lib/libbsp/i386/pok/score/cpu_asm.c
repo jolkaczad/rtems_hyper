@@ -47,12 +47,7 @@
  *  XXX document implementation including references if appropriate
  */
 
-void _CPU_Context_save_fp(
-  Context_Control_fp **fp_context_ptr
-)
-{
-  printk("_cpu_context_save_fp\n");
-}
+/* in cpu.S */
 
 /*
  *  _CPU_Context_restore_fp_context
@@ -71,11 +66,7 @@ void _CPU_Context_save_fp(
  *  XXX document implementation including references if appropriate
  */
 
-void _CPU_Context_restore_fp(
-  Context_Control_fp **fp_context_ptr
-)
-{
-}
+/* in cpu.S */
 
 /*  _CPU_Context_switch
  *
@@ -86,13 +77,7 @@ void _CPU_Context_restore_fp(
  *  XXX document implementation including references if appropriate
  */
 
-void _CPU_Context_switch(
-  Context_Control  *run,
-  Context_Control  *heir
-)
-{
-  printk("_cpu_context_switch\n");
-}
+/* in cpu.S */
 
 /*
  *  _CPU_Context_restore
@@ -107,11 +92,7 @@ void _CPU_Context_switch(
  *  XXX document implementation including references if appropriate
  */
 
-void _CPU_Context_restore(
-  Context_Control *new_context
-)
-{
-}
+/* in cpu.S */
 
 /*  void __ISR_Handler()
  *

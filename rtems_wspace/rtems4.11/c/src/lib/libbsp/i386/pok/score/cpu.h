@@ -531,21 +531,16 @@ extern "C" {
  *  that must be saved during a voluntary context switch from one thread
  *  to another.
  */
-typedef struct {
-    /** This field is a hint that a port will have a number of integer
-     *  registers that need to be saved at a context switch.
-     */
-    uint32_t   some_integer_register;
-    /** This field is a hint that a port will have a number of system
-     *  registers that need to be saved at a context switch.
-     */
-    uint32_t   some_system_register;
 
-    /** This field is a hint that a port will have a register that
-     *  is the stack pointer.
-     */
-    uint32_t   stack_pointer;
-} Context_Control;
+#ifndef ASM
+typedef struct {
+  uint32_t    eflags;   /* extended flags register                   */
+  void       *esp;      /* extended stack pointer register           */
+  void       *ebp;      /* extended base pointer register            */
+  uint32_t    ebx;      /* extended bx register                      */
+  uint32_t    esi;      /* extended source index register            */
+  uint32_t    edi;      /* extended destination index flags register */
+}   Context_Control;
 
 /**
  *  @ingroup CPUContext Management
@@ -556,8 +551,9 @@ typedef struct {
  *
  *  @return This method returns the stack pointer.
  */
+
 #define _CPU_Context_Get_SP( _context ) \
-  (_context)->stack_pointer
+  (_context)->esp
 
 /**
  *  @ingroup CPUContext Management
@@ -594,7 +590,7 @@ typedef struct {
  *  XXX document implementation including references if appropriate
  */
 SCORE_EXTERN Context_Control_fp  _CPU_Null_fp_context;
-
+#endif /* ASM */
 /**
  *  @defgroup CPUInterrupt Processor Dependent Interrupt Management
  *
@@ -691,7 +687,9 @@ SCORE_EXTERN Context_Control_fp  _CPU_Null_fp_context;
  *
  *  XXX document implementation including references if appropriate
  */
-#define CPU_ALIGNMENT              8
+#define CPU_ALIGNMENT                    4
+#define CPU_HEAP_ALIGNMENT               CPU_ALIGNMENT
+#define CPU_PARTITION_ALIGNMENT          CPU_ALIGNMENT
 
 /**
  *  This number corresponds to the byte alignment requirement for the
@@ -749,7 +747,7 @@ SCORE_EXTERN Context_Control_fp  _CPU_Null_fp_context;
  *
  *  XXX document implementation including references if appropriate
  */
-#define CPU_STACK_ALIGNMENT        0
+#define CPU_STACK_ALIGNMENT        16
 
 /*
  *  ISR handler macros
@@ -845,10 +843,14 @@ SCORE_EXTERN Context_Control_fp  _CPU_Null_fp_context;
  *
  *  XXX document implementation including references if appropriate
  */
-uint32_t   _CPU_ISR_Get_level( void );
 
+#ifndef ASM
+uint32_t   _CPU_ISR_Get_level( void );
+#endif /* ASM */
 /* end of ISR handler macros */
 
+#define CPU_EFLAGS_INTERRUPTS_ON  0x00003202
+#define CPU_EFLAGS_INTERRUPTS_OFF 0x00003002
 /* Context handler macros */
 
 /**
@@ -882,12 +884,24 @@ uint32_t   _CPU_ISR_Get_level( void );
  *
  *  XXX document implementation including references if appropriate
  */
+#ifndef ASM
 #define _CPU_Context_Initialize( _the_context, _stack_base, _size, \
-                                 _isr, _entry_point, _is_fp ) \
-  { \
-    printk("_cpu_context_initialize()\n"); \
-  }
+                                   _isr, _entry_point, _is_fp ) \
+  do { \
+    uint32_t   _stack; \
+    \
+    if ( (_isr) ) (_the_context)->eflags = CPU_EFLAGS_INTERRUPTS_OFF; \
+    else          (_the_context)->eflags = CPU_EFLAGS_INTERRUPTS_ON; \
+    \
+    _stack  = ((uint32_t)(_stack_base)) + (_size); \
+	_stack &= ~ (CPU_STACK_ALIGNMENT - 1); \
+    _stack -= 2*sizeof(proc_ptr*); /* see above for why we need to do this */ \
+    *((proc_ptr *)(_stack)) = (_entry_point); \
+    (_the_context)->ebp     = (void *) 0; \
+    (_the_context)->esp     = (void *) _stack; \
+  } while (0)
 
+#endif /* ASM */
 /**
  *  This routine is responsible for somehow restarting the currently
  *  executing task.  If you are lucky, then all that is necessary
@@ -1113,7 +1127,7 @@ uint32_t   _CPU_ISR_Get_level( void );
 /* end of Priority handler macros */
 
 /* functions */
-
+#ifndef ASM
 /**
  *  This routine performs CPU dependent initialization.
  *
@@ -1296,7 +1310,7 @@ static inline uint32_t CPU_swap_u32(
   swapped = (byte1 << 24) | (byte2 << 16) | (byte3 << 8) | byte4;
   return swapped;
 }
-
+#endif /* ASM */
 /**
  *  @ingroup CPUEndian
  *  This routine swaps a 16 bir quantity.
