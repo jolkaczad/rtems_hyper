@@ -1,5 +1,12 @@
 %rename lib old_lib
 
+*endfile:
+crtend.o%s crtn.o%s
+
+*startfile:
+%{!qrtems: %(old_startfile)} \
+%{!nostdlib: %{qrtems: crti.o%s crtbegin.o%s }}
+
 *lib:
 %{!qrtems: %(old_lib)} \
 %{!nostdlib: %{qrtems: --start-group -lrtemsbsp -lrtemscpu -lc -lgcc --end-group \
