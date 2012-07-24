@@ -101,6 +101,9 @@ pok_ret_t      pok_thread_suspend (void);
 pok_ret_t      pok_thread_restart (const uint32_t tid);
 pok_ret_t      pok_thread_get_status (const uint32_t id, pok_thread_attr_t *attr);
 
+void _CPU_Context_switch(void  *run, void  *heir);
+
+
 #ifdef POK_NEEDS_PARTITIONS
 pok_ret_t		pok_partition_thread_create (uint32_t* thread_id,
                                             const pok_thread_attr_t* attr,

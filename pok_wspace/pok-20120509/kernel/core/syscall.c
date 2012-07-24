@@ -340,6 +340,11 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
        break;
 #endif /* POK_NEEDS_PCI */
 
+     case POK_SYSCALL_RTEMS_TASKSWITCH:
+       _CPU_Context_switch ((void *)(args->arg1 + infos->base_addr), (void *)(args->arg2 + infos->base_addr));
+       return POK_ERRNO_OK;
+       break;
+
 
       /**
        * Here is the default syscall handler. In this case, the syscall

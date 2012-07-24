@@ -52,6 +52,5 @@ uint32_t		pok_context_create(uint32_t id,
 void			pok_context_switch(uint32_t* old_sp,
 					   uint32_t new_sp);
 
-
 #endif /* !__POK_X86_THREAD_H__ */
 

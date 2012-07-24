@@ -72,5 +72,47 @@ asm (".global pok_context_switch	\n"
      "1:				\n"
      "ret"
      );
+void _CPU_Context_switch(
+    void  *run,
+    void  *heir);
+
+asm (".set REG_EFLAGS,  0 \n"
+  ".set REG_ESP,     REG_EFLAGS + 4 \n"
+  ".set REG_EBP,     REG_ESP + 4  \n"
+  ".set REG_EBX,     REG_EBP + 4  \n"
+  ".set REG_ESI,     REG_EBX + 4  \n"
+  ".set REG_EDI,     REG_ESI + 4  \n"
+  ".set SIZE_REGS,   REG_EDI + 4  \n"
+
+  ".text  \n"
+
+  ".p2align  1 \n"
+  ".global _CPU_Context_switch \n"
+  "_CPU_Context_switch:  \n"
+
+".set RUNCONTEXT_ARG,   4\n"                  /* save context argument */
+".set HEIRCONTEXT_ARG,  8\n"                  /* restore context argument */
+
+        "movl      RUNCONTEXT_ARG(%esp),%eax  \n"  /* eax = running threads context */
+        "pushf  \n"                              /* push eflags */
+        "popl      REG_EFLAGS(%eax)  \n"          /* save eflags */
+        "movl      %esp,REG_ESP(%eax) \n"         /* save stack pointer */
+        "movl      %ebp,REG_EBP(%eax) \n"         /* save base pointer */
+        "movl      %ebx,REG_EBX(%eax) \n"         /* save ebx */
+        "movl      %esi,REG_ESI(%eax) \n"         /* save source register */
+        "movl      %edi,REG_EDI(%eax) \n"         /* save destination register */
+
+        "movl      HEIRCONTEXT_ARG(%esp),%eax\n"  /* eax = heir threads context */
+
+"restore: \n"
+        "pushl     REG_EFLAGS(%eax)  \n"          /* push eflags */
+        "popf \n"                               /* restore eflags */
+        "movl      REG_ESP(%eax),%esp \n"         /* restore stack pointer */
+        "movl      REG_EBP(%eax),%ebp \n"         /* restore base pointer */
+        "movl      REG_EBX(%eax),%ebx \n"         /* restore ebx */
+        "movl      REG_ESI(%eax),%esi \n"         /* restore source register */
+        "movl      REG_EDI(%eax),%edi \n"         /* restore destination register */
+        "ret"
+        );
 
 #endif

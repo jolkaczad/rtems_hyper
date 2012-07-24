@@ -24,8 +24,6 @@ rtems_task Init(
   printf( "Hello World\n" );
   printf( "*** END OF HELLO WORLD TEST ***\n" );
 
-  pok_do_syscall(NULL, NULL);
-
   exit( 0 );
 }
 

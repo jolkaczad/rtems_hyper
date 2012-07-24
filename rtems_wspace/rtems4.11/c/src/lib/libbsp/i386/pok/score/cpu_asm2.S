@@ -43,12 +43,12 @@
  */
 
         .p2align  1
-        PUBLIC (_CPU_Context_switch)
+/*        PUBLIC (_CPU_Context_switch)*/
 
 .set RUNCONTEXT_ARG,   4                   /* save context argument */
 .set HEIRCONTEXT_ARG,  8                   /* restore context argument */
 
-SYM (_CPU_Context_switch):
+/* SYM (_CPU_Context_switch): */
         movl      RUNCONTEXT_ARG(esp),eax  /* eax = running threads context */
         pushf                              /* push eflags */
         popl      REG_EFLAGS(eax)          /* save eflags */
@@ -80,7 +80,7 @@ restore:
  *  This routine performs a normal non-FP context.
  */
 
-        PUBLIC (_CPU_Context_restore)
+/*        PUBLIC (_CPU_Context_restore)*/
 
 .set NEWCONTEXT_ARG,   4                   /* context to restore argument */
 

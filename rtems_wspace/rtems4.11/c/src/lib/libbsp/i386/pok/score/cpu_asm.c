@@ -28,6 +28,7 @@
 
 #include <rtems/system.h>
 #include <rtems/score/cpu.h>
+#include <bsp/poksyscalls.h>
 /* #include "cpu_asm.h> */
 
 /*
@@ -77,8 +78,12 @@
  *  XXX document implementation including references if appropriate
  */
 
-/* in cpu.S */
-
+void _CPU_Context_switch(
+    Context_Control  *run,
+    Context_Control  *heir)
+{
+  pok_syscall2 (POK_SYSCALL_RTEMS_TASKSWITCH,(uint32_t)run, (uint32_t)heir);
+}
 /*
  *  _CPU_Context_restore
  *
@@ -92,7 +97,10 @@
  *  XXX document implementation including references if appropriate
  */
 
-/* in cpu.S */
+void _CPU_Context_restore(Context_Control *heir)
+{
+  printk("_cpu_context_restore()");
+}
 
 /*  void __ISR_Handler()
  *
