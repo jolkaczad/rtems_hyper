@@ -900,7 +900,13 @@ uint32_t   _CPU_ISR_Get_level( void );
     (_the_context)->ebp     = (void *) 0; \
     (_the_context)->esp     = (void *) _stack; \
   } while (0)
-
+#if 0
+#define _CPU_Context_Initialize( _the_context, _stack_base, _size, \
+                                   _isr, _entry_point, _is_fp ) \
+do {  \
+  printk("_CPU_Context_Initialize())\n"); \
+} while (0)
+#endif
 #endif /* ASM */
 /**
  *  This routine is responsible for somehow restarting the currently

@@ -37,6 +37,18 @@
  * \author Julien Delange
  */
 
+typedef struct {
+  uint32_t    eflags;   /* extended flags register                   */
+  void       *esp;      /* extended stack pointer register           */
+  void       *ebp;      /* extended base pointer register            */
+  uint32_t    ebx;      /* extended bx register                      */
+  uint32_t    esi;      /* extended source index register            */
+  uint32_t    edi;      /* extended destination index flags register */
+} Context_Control;
+
+Context_Control run;
+Context_Control heir;
+
 pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
                             const pok_syscall_args_t*    args,
                             const pok_syscall_info_t*    infos)
@@ -341,10 +353,16 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
 #endif /* POK_NEEDS_PCI */
 
      case POK_SYSCALL_RTEMS_TASKSWITCH:
-       _CPU_Context_switch ((void *)(args->arg1 + infos->base_addr), (void *)(args->arg2 + infos->base_addr));
+       run = *(Context_Control *)(args->arg1 + infos->base_addr);
+       heir = *(Context_Control *)(args->arg2 + infos->base_addr);
+
+       /*
+       printf("POK run: ebx 0x%x, esi 0x%x, edi 0x%x, esp 0x%x, ebp 0x%x\n", run.ebx, run.esi, run.edi, run.esp, run.ebp);
+       printf("POK heir: ebx 0x%x, esi 0x%x, edi 0x%x, esp 0x%x, ebp 0x%x\n", heir.ebx, heir.esi, heir.edi, heir.esp, heir.ebp);
+*/ 
+       _CPU_Context_switch((void *)(args->arg1 + infos->base_addr), (void *)(args->arg2 + infos->base_addr));
        return POK_ERRNO_OK;
        break;
-
 
       /**
        * Here is the default syscall handler. In this case, the syscall

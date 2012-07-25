@@ -82,6 +82,9 @@ void _CPU_Context_switch(
     Context_Control  *run,
     Context_Control  *heir)
 {
+  printk("RTEMS: run: ebx 0x%x, esi 0x%x, edi 0x%x, esp 0x%x, ebp 0x%x\n", run->ebx, run->esi, run->edi, run->esp, run->ebp);
+  printk("RTEMS: heir: ebx 0x%x, esi 0x%x, edi 0x%x, esp 0x%x, ebp 0x%x\n", heir->ebx, heir->esi, heir->edi, heir->esp, heir->ebp);
+
   pok_syscall2 (POK_SYSCALL_RTEMS_TASKSWITCH,(uint32_t)run, (uint32_t)heir);
 }
 /*
