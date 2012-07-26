@@ -46,8 +46,8 @@ typedef struct {
   uint32_t    edi;      /* extended destination index flags register */
 } Context_Control;
 
-Context_Control run;
-Context_Control heir;
+Context_Control *run;
+Context_Control *heir;
 
 pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
                             const pok_syscall_args_t*    args,
@@ -353,14 +353,20 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
 #endif /* POK_NEEDS_PCI */
 
      case POK_SYSCALL_RTEMS_TASKSWITCH:
-       run = *(Context_Control *)(args->arg1 + infos->base_addr);
-       heir = *(Context_Control *)(args->arg2 + infos->base_addr);
+       run = (Context_Control *)(args->arg1 + infos->base_addr);
+       heir = (Context_Control *)(args->arg2 + infos->base_addr);
 
        /*
        printf("POK run: ebx 0x%x, esi 0x%x, edi 0x%x, esp 0x%x, ebp 0x%x\n", run.ebx, run.esi, run.edi, run.esp, run.ebp);
        printf("POK heir: ebx 0x%x, esi 0x%x, edi 0x%x, esp 0x%x, ebp 0x%x\n", heir.ebx, heir.esi, heir.edi, heir.esp, heir.ebp);
-*/ 
-       _CPU_Context_switch((void *)(args->arg1 + infos->base_addr), (void *)(args->arg2 + infos->base_addr));
+*/
+
+       
+       heir->esp += infos->base_addr;
+/*       heir->ebp += infos->base_addr;*/
+       
+/*       _CPU_Context_switch((void *)args->arg1 + infos->base_addr, (void *)args->arg2 + infos->base_addr);*/
+        _CPU_Context_switch((void *)run, (void *)heir);
        return POK_ERRNO_OK;
        break;
 

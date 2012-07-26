@@ -72,10 +72,18 @@ asm (".global pok_context_switch	\n"
      "1:				\n"
      "ret"
      );
+
+typedef struct {
+    uint32_t    eflags;   /* extended flags register                   */
+    void       *esp;      /* extended stack pointer register           */
+    void       *ebp;      /* extended base pointer register            */
+    uint32_t    ebx;      /* extended bx register                      */
+    uint32_t    esi;      /* extended source index register            */
+    uint32_t    edi;      /* extended destination index flags register */
+}   Context_Control; 
 void _CPU_Context_switch(
     void  *run,
     void  *heir);
-
 asm (".set REG_EFLAGS,  0 \n"
   ".set REG_ESP,     REG_EFLAGS + 4 \n"
   ".set REG_EBP,     REG_ESP + 4  \n"
@@ -114,5 +122,4 @@ asm (".set REG_EFLAGS,  0 \n"
         "movl      REG_EDI(%eax),%edi \n"         /* restore destination register */
         "ret"
         );
-
 #endif
