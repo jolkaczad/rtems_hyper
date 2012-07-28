@@ -55,17 +55,13 @@ $ ./collect_script.sh
 
 9. copy the rtems image into the POK directory so that it can be included in a
 partition
-$ cp -v ./o-optimize/hello.ralf $POK_WSPACE_PATH/partitions-threads_rtems/
+$ ./copyelf.sh
 
 10. substiute the original executable created by the standard example
 compilation process with an image containing a real POK "hello world partition"
 and a RTEMS partition using a dedicated script emulating the work of a Makefile
 $ cd $POK_WSPACE_PATH/partitions-threads_rtems
-$ ./pokrtems_combine.sh generated-code/cpu/part1/part1.elf hello.ralf
+$ ./call_pokrtems_combine.sh
 
-11. verify the process by running the compiled elf file inside QEMU; expected
-output is one partition printing hello world messages and the other printing
-a "RTEMS bsp_start()" first (using a direct system call to POK),
-and "RTEMS printk()" later (produced by RTEMS' printk()) both coming
-from the bsp_start() function inside RTEMS.
+11. verify the process by running the compiled elf file inside QEMU
 $ make run

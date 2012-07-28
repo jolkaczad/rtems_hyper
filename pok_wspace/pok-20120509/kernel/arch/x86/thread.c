@@ -112,7 +112,7 @@ asm (".set REG_EFLAGS,  0 \n"
 
         "movl      HEIRCONTEXT_ARG(%esp),%eax\n"  /* eax = heir threads context */
 
-"restore: \n"
+
         "pushl     REG_EFLAGS(%eax)  \n"          /* push eflags */
         "popf \n"                               /* restore eflags */
         "movl      REG_ESP(%eax),%esp \n"         /* restore stack pointer */

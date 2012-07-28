@@ -40,7 +40,7 @@ libbsp_a_SOURCES += console/console.c
 # timer
 libbsp_a_SOURCES += timer/timer.c timer/timerisr.c
 #score
-libbsp_a_SOURCES += score/cpu.c score/cpu_asm2.S score/cpu_asm.c score/pokinternals.c
+libbsp_a_SOURCES += score/cpu.c score/cpu_asm2.S score/cpu_asm.c
 
 EXTRA_DIST = times
 
@@ -54,8 +54,7 @@ nodist_include_bsp_HEADERS += score/cpu.h \
 	score/registers.h \
 	score/types.h \
 	score/idtr.h \
-	score/i386.h \
-	score/pokinternals.h
+	score/i386.h 
 
 # start
 nodist_include_bsp_HEADERS += start/poksyscalls.h
