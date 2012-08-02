@@ -18,6 +18,14 @@
 #include <types.h>
 #include <core/syscall.h>
 
+int tick_count = 0;
+void tick_notify (void)
+{
+  if (tick_count++ >= 1000){
+    tick_count = 0;
+  }
+}
+
 void user_hello_part1 ()
 {
 	/*
@@ -32,7 +40,9 @@ void user_hello_part1 ()
 
 	pok_syscall2 (POK_SYSCALL_CONSWRITE, (uint32_t)buff, pos);
 
-	pok_syscall3 (POK_SYSCALL_PARTITION_GET_MEMORY_INFO, (uint32_t)&size, (uint32_t)&base_addr, (uint32_t)&stack_size); 
+	pok_syscall3 (POK_SYSCALL_PARTITION_GET_MEMORY_INFO, (uint32_t)&size, (uint32_t)&base_addr, (uint32_t)&stack_size);
+
+  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)&tick_notify);
 
 	printf ("size: 0x%x, base_add: 0x%x, stack_size: 0x%x\n", size, base_addr, stack_size);
 }

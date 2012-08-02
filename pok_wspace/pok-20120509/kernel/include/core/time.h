@@ -30,7 +30,7 @@
 
 extern uint64_t pok_tick_counter;
 
-#define CLOCK_HANDLER pok_tick_counter += 1; pok_sched ();
+#define CLOCK_HANDLER pok_tick_counter += 1; pok_sched (); pok_tick_notify ();
 
 #define POK_GETTICK() pok_tick_counter
 
@@ -56,5 +56,10 @@ pok_ret_t   pok_clock_gettime (pok_clockid_t clk_id, struct timespec *tp);
 uint64_t    pok_gettick (void);
 pok_ret_t   pok_gettick_by_pointer (uint64_t* clk_val);
 
+void pok_tick_notify ();
+
+extern void (*pok_tick_callback)(void);
+
+pok_ret_t pok_register_tick_notify (void (*callback)(void));
 #endif  /* __POK_TIME_H__ */
 #endif /* Needs clauses */

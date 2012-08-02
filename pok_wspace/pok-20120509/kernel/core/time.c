@@ -50,6 +50,20 @@ void pok_time_init (void)
    pok_bsp_time_init ();
 }
 
+void (*pok_tick_callback)(void) = NULL;
+void pok_tick_notify (void)
+{
+  if (pok_tick_callback != NULL){
+    pok_tick_callback ();
+  }
+  return;
+}
+
+pok_ret_t pok_register_tick_notify (void (*callback)(void))
+{
+  pok_tick_callback = callback;
+  return POK_ERRNO_OK;
+}
 
 #ifdef POK_NEEDS_GETTICK
 /**

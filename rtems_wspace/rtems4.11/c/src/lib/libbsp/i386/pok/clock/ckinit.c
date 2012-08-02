@@ -16,9 +16,10 @@
 
 #include <rtems.h>
 #include <bsp.h>
+#include <bsp/poksyscalls.h>
 
 void Clock_exit( void );
-rtems_isr Clock_isr( rtems_vector_number vector );
+void Clock_isr (void);
 
 /*
  *  The interrupt vector number associated with the clock tick device
@@ -33,7 +34,6 @@ rtems_isr Clock_isr( rtems_vector_number vector );
  */
 
 volatile uint32_t         Clock_driver_ticks;
-
 /*
  *  Clock_isrs is the number of clock ISRs until the next invocation of
  *  the RTEMS clock tick routine.  The clock tick device driver
@@ -43,6 +43,7 @@ volatile uint32_t         Clock_driver_ticks;
  */
 
 uint32_t         Clock_isrs;              /* ISRs until next tick */
+uint32_t  Clock_isrs_const;
 
 /*
  * These are set by clock driver during its init
@@ -63,8 +64,8 @@ void Clock_exit( void );
  *  Isr Handler
  */
 
-rtems_isr Clock_isr(
-  rtems_vector_number vector
+void Clock_isr(
+    void
 )
 {
 /*
@@ -75,6 +76,15 @@ rtems_isr Clock_isr(
  *
  * perform any timer dependent tasks
  */
+  if(!Clock_isrs) {
+    rtems_clock_tick();
+    Clock_isrs = Clock_isrs_const;
+  }
+  else {
+    Clock_isrs-- ;
+  }
+
+  while (1);
 }
 
 /*
@@ -88,14 +98,15 @@ void Install_clock(
   rtems_isr_entry clock_isr
 )
 {
+  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)&Clock_isr);
   /*
    *  Initialize the clock tick device driver variables
    */
 
-  Clock_driver_ticks = 0;
-  Clock_isrs = rtems_configuration_get_microseconds_per_tick() / 1000;
+  Clock_isrs_const = rtems_configuration_get_microseconds_per_tick() / 1000;
+  Clock_isrs = Clock_isrs_const;
 
-  Old_ticker = (rtems_isr_entry) set_vector( clock_isr, CLOCK_VECTOR, 1 );
+//  Old_ticker = (rtems_isr_entry) set_vector( clock_isr, CLOCK_VECTOR, 1 );
   /*
    *  Hardware specific initialize goes here
    */

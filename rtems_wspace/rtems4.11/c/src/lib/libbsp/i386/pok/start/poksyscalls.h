@@ -46,7 +46,9 @@ typedef enum
 	POK_ERRNO_LOCKOBJ_POLICY       =  503,
 
 	POK_ERRNO_PARTITION_MODE       =  601,
-  POK_ERRNO_PARTITION            =  401
+  POK_ERRNO_PARTITION            =  401,
+
+  POK_SYSCALL_REGISTER_TICK_NOTIFY  = 701,
 } pok_ret_t;
 
 

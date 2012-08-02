@@ -125,6 +125,9 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
 	return pok_thread_get_status (args->arg1, (pok_thread_attr_t*) (args->arg2 + infos->base_addr));
          break;
 
+      case POK_SYSCALL_REGISTER_TICK_NOTIFY:
+         return pok_register_tick_notify ((void (*)())(args->arg1 + infos->base_addr));
+         break; 
 #ifdef POK_NEEDS_ERROR_HANDLING
 
 /**
