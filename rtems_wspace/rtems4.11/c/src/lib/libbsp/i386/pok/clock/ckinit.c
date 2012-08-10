@@ -76,6 +76,10 @@ void Clock_isr(
  *
  * perform any timer dependent tasks
  */
+
+  Clock_driver_ticks++;
+  rtems_clock_tick();
+/*  Clock_driver_ticks++;
   if(!Clock_isrs) {
     rtems_clock_tick();
     Clock_isrs = Clock_isrs_const;
@@ -83,8 +87,7 @@ void Clock_isr(
   else {
     Clock_isrs-- ;
   }
-
-  while (1);
+  */
 }
 
 /*
@@ -98,14 +101,15 @@ void Install_clock(
   rtems_isr_entry clock_isr
 )
 {
-  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)&Clock_isr);
+  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)&Clock_isr());
   /*
    *  Initialize the clock tick device driver variables
    */
 
+/*
   Clock_isrs_const = rtems_configuration_get_microseconds_per_tick() / 1000;
   Clock_isrs = Clock_isrs_const;
-
+*/
 //  Old_ticker = (rtems_isr_entry) set_vector( clock_isr, CLOCK_VECTOR, 1 );
   /*
    *  Hardware specific initialize goes here

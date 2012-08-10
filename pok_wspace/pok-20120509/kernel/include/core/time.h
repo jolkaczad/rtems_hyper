@@ -30,7 +30,7 @@
 
 extern uint64_t pok_tick_counter;
 
-#define CLOCK_HANDLER pok_tick_counter += 1; pok_sched (); pok_tick_notify ();
+#define CLOCK_HANDLER pok_tick_counter += 1; pok_tick_notify (); pok_sched ();
 
 #define POK_GETTICK() pok_tick_counter
 

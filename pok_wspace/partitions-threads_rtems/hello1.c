@@ -18,14 +18,16 @@
 #include <types.h>
 #include <core/syscall.h>
 
-int tick_count = 0;
+int _notify = 0;
+int ticks;
+
 void tick_notify (void)
 {
-  if (tick_count++ >= 1000){
-    tick_count = 0;
-  }
-}
+  ticks++;
 
+  _notify = 1;
+}
+    
 void user_hello_part1 ()
 {
 	/*
@@ -34,6 +36,8 @@ void user_hello_part1 ()
 	uint32_t size;
 	uint32_t stack_size;
 	uint32_t base_addr;
+
+  void (*fptr)(void);
 	
 	char buff[] = {"[PART1] Hello Worlds\n"};
 	int pos = sizeof (buff);	
@@ -42,7 +46,16 @@ void user_hello_part1 ()
 
 	pok_syscall3 (POK_SYSCALL_PARTITION_GET_MEMORY_INFO, (uint32_t)&size, (uint32_t)&base_addr, (uint32_t)&stack_size);
 
-  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)&tick_notify);
+  fptr = tick_notify;
 
+  fptr();
+  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, fptr);
+
+  printf ("partition fptr address: 0x%x\n", (uint32_t)tick_notify);
 	printf ("size: 0x%x, base_add: 0x%x, stack_size: 0x%x\n", size, base_addr, stack_size);
+
+  if (_notify != 0){
+    _notify = 0;
+    printf ("tick\n");
+  }
 }
