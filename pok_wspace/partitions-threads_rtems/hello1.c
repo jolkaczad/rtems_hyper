@@ -24,7 +24,6 @@ int ticks;
 void tick_notify (void)
 {
   ticks++;
-
   _notify = 1;
 }
     
@@ -48,8 +47,7 @@ void user_hello_part1 ()
 
   fptr = tick_notify;
 
-  fptr();
-  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, fptr);
+  /* pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, fptr); */
 
   printf ("partition fptr address: 0x%x\n", (uint32_t)tick_notify);
 	printf ("size: 0x%x, base_add: 0x%x, stack_size: 0x%x\n", size, base_addr, stack_size);

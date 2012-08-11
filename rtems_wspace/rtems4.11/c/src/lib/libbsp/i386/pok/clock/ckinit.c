@@ -97,18 +97,19 @@ void Clock_isr(
  * will be temporarily kept in the clock driver files for convenience
  */
 
-enum isr_sources {
+typedef enum {
   POK_IRQSOURCE_CLOCK = 0,
-};
+} pok_isr_sources_t;
 
-void (*isr_handlers[2])(void);
+void (*isr_handlers[CPU_INTERRUPT_NUMBER_OF_VECTORS])(void) = {NULL};
 
 void isr_dispatch (
-    enum isr_sources source
+    pok_isr_sources_t source
 )
 {
   void (*fptr)(void);
 
+  while(1); /* just to determine if function gets inside */
   fptr = isr_handlers[source];
   
   if (fptr != NULL){
@@ -117,7 +118,7 @@ void isr_dispatch (
 }
 
 void install_handler (
-    enum isr_sources source,
+    pok_isr_sources_t source,
     void (*handler)(void)
 )
 {
@@ -137,6 +138,7 @@ void Install_clock(
   void(*clock_handler)(void)
 )
 {
+  printk ("install_clock()\n");
   pok_syscall1 (POK_SYSCALL_REGISTER_RTEMS_ISR, (uint32_t)isr_dispatch);
 
   install_handler (POK_IRQSOURCE_CLOCK, clock_handler);
