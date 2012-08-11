@@ -23,6 +23,8 @@
 #include <types.h>
 #include <errno.h>
 
+#include <core/forward_irq.h>
+
 /**
  * The rate of the clock in POK
  */
@@ -30,7 +32,7 @@
 
 extern uint64_t pok_tick_counter;
 
-#define CLOCK_HANDLER pok_tick_counter += 1; pok_tick_notify (); pok_sched ();
+#define CLOCK_HANDLER pok_tick_counter += 1; pok_sched (); pok_isr_channel (POK_IRQSOURCE_CLOCK);
 
 #define POK_GETTICK() pok_tick_counter
 

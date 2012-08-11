@@ -77,6 +77,7 @@ void Clock_isr(
  * perform any timer dependent tasks
  */
 
+  while(1);
   Clock_driver_ticks++;
   rtems_clock_tick();
 /*  Clock_driver_ticks++;
@@ -90,18 +91,57 @@ void Clock_isr(
   */
 }
 
+
+/*
+ * during development, all the files concerning the POK-RTEMS interrupt channelling
+ * will be temporarily kept in the clock driver files for convenience
+ */
+
+enum isr_sources {
+  POK_IRQSOURCE_CLOCK = 0,
+};
+
+void (*isr_handlers[2])(void);
+
+void isr_dispatch (
+    enum isr_sources source
+)
+{
+  void (*fptr)(void);
+
+  fptr = isr_handlers[source];
+  
+  if (fptr != NULL){
+    fptr();
+  }
+}
+
+void install_handler (
+    enum isr_sources source,
+    void (*handler)(void)
+)
+{
+  if (handler == NULL){
+    return;
+  }
+
+  isr_handlers[source] = handler;
+}
 /*
  *  Install_clock
  *
  *  Install a clock tick handler and reprograms the chip.  This
  *  is used to initially establish the clock tick.
  */
-
 void Install_clock(
-  rtems_isr_entry clock_isr
+  void(*clock_handler)(void)
 )
 {
-  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)&Clock_isr());
+  pok_syscall1 (POK_SYSCALL_REGISTER_RTEMS_ISR, (uint32_t)isr_dispatch);
+
+  install_handler (POK_IRQSOURCE_CLOCK, clock_handler);
+
+/*   pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)&Clock_isr); */
   /*
    *  Initialize the clock tick device driver variables
    */

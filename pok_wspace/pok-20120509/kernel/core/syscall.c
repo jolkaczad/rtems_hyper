@@ -28,6 +28,7 @@
 #include <core/lockobj.h>
 #include <core/time.h>
 #include <core/error.h>
+#include <core/forward_irq.h>
 
 #include <middleware/port.h>
 
@@ -41,7 +42,6 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
                             const pok_syscall_args_t*    args,
                             const pok_syscall_info_t*    infos)
 {
-   void (*fptr)(void);
    switch (syscall_id)
    {
 #if defined (POK_NEEDS_CONSOLE) || defined (POK_NEEDS_DEBUG)
@@ -127,13 +127,6 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
          break;
 
       case POK_SYSCALL_REGISTER_TICK_NOTIFY:
-         fptr = (void (*)(void))(args->arg1 + infos->base_addr);
-
-         printf ("infos->base_addr: 0x%d\n", infos->base_addr);
-         printf ("kernel arg1: 0x%x\n", args->arg1);
-         printf ("kernel fptr address 0x%x\n", fptr);
-         fptr();
-
          return pok_register_tick_notify ((void (*)(void))(args->arg1 + infos->base_addr));
          break; 
 #ifdef POK_NEEDS_ERROR_HANDLING
@@ -351,6 +344,9 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
        break;
 #endif /* POK_NEEDS_PCI */
 
+     case POK_SYSCALL_REGISTER_RTEMS_ISR:
+       return register_rtems_isr ((void(*)(pok_isr_sources_t))(args->arg1 + infos->base_addr), infos->partition);
+       break;
 
       /**
        * Here is the default syscall handler. In this case, the syscall
