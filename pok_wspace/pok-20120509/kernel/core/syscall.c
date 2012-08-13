@@ -345,7 +345,11 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
 #endif /* POK_NEEDS_PCI */
 
      case POK_SYSCALL_REGISTER_RTEMS_ISR:
-       return register_rtems_isr ((void(*)(pok_isr_sources_t))(args->arg1 + infos->base_addr), infos->partition);
+       return pok_register_rtems_isr ((void(*)(pok_isr_sources_t))(args->arg1 + infos->base_addr), infos->partition);
+       break;
+
+     case POK_SYSCALL_REGISTER_RTEMS_ELAPSED_TICKS:
+       return pok_register_rtems_elapsed_ticks ((void(*)(uint32_t elapsed_ticks))(args->arg1 + infos->base_addr), infos->partition);
        break;
 
       /**

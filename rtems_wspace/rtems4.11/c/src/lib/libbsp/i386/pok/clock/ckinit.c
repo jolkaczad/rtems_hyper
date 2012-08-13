@@ -109,7 +109,6 @@ void isr_dispatch (
 {
   void (*fptr)(void);
 
-  while(1); /* just to determine if function gets inside */
   fptr = isr_handlers[source];
   
   if (fptr != NULL){

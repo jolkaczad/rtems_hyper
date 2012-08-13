@@ -84,6 +84,7 @@ typedef enum
 #endif
    POK_SYSCALL_REGISTER_TICK_NOTIFY                = 701,
    POK_SYSCALL_REGISTER_RTEMS_ISR                  = 702,
+   POK_SYSCALL_REGISTER_RTEMS_ELAPSED_TICKS        = 703,
 } pok_syscall_id_t;
 
 typedef struct
