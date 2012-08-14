@@ -89,7 +89,7 @@ extern "C" {
 #define TOD_NANOSECONDS_PER_SECOND      (uint32_t)1000000000
 
 /**
- *  This constant represents the number of nanoseconds in a mircosecond.
+ *  This constant represents the number of nanoseconds in a microsecond.
  */
 #define TOD_NANOSECONDS_PER_MICROSECOND (uint32_t)1000
 

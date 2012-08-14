@@ -14,13 +14,19 @@
 
 #include <stdlib.h>
 
-#include <rtems.h>
 #include <bsp.h>
 #include <bsp/poksyscalls.h>
+
+#include <rtems.h>
+#include <rtems/config.h>
+#include <rtems/score/tod.h>
+#include <rtems/score/watchdog.h>
+#include <rtems/score/timestamp.h>
 
 void Clock_exit( void );
 void Clock_isr (void);
 
+void rtems_clock_tick_update(uint32_t ticks_u32);
 /*
  *  The interrupt vector number associated with the clock tick device
  *  driver.
@@ -142,22 +148,16 @@ void Install_clock(
 
   install_handler (POK_IRQSOURCE_CLOCK, clock_handler);
 
-/*   pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)&Clock_isr); */
   /*
-   *  Initialize the clock tick device driver variables
+   * install the notification of ticks missed due to a partition switch on POK
    */
+  pok_syscall1 (POK_SYSCALL_REGISTER_RTEMS_ELAPSED_TICKS, (uint32_t)rtems_clock_tick_update); 
+
 
 /*
   Clock_isrs_const = rtems_configuration_get_microseconds_per_tick() / 1000;
   Clock_isrs = Clock_isrs_const;
 */
-//  Old_ticker = (rtems_isr_entry) set_vector( clock_isr, CLOCK_VECTOR, 1 );
-  /*
-   *  Hardware specific initialize goes here
-   */
-
-  /* XXX */
-
   /*
    *  Schedule the clock cleanup routine to execute if the application exits.
    */
@@ -201,3 +201,53 @@ rtems_device_driver Clock_initialize(
   return RTEMS_SUCCESSFUL;
 }
 
+  /* 
+   * updating the system with a number of clock ticks at once
+   */
+void rtems_clock_tick_update(uint32_t ticks_u32)
+{
+  /* _TOD_Tickle_ticks(); */
+  Timestamp_Control tick;
+  uint32_t  nanoseconds_per_tick;
+  int i;
+  int sec;
+  unsigned long ticks = ticks_u32;
+
+  nanoseconds_per_tick = rtems_configuration_get_nanoseconds_per_tick();
+
+  _Timestamp_Set( &tick, 0, nanoseconds_per_tick * ticks);
+
+  _Watchdog_Ticks_since_boot += ticks;
+
+  _Timestamp_Add_to( &_TOD.uptime, &tick );
+  _Timestamp_Add_to( &_TOD.now, &tick );
+
+  _TOD.seconds_trigger += nanoseconds_per_tick;
+  if ( _TOD.seconds_trigger >= 1000000000UL ) {
+    /* more than one second may have elapsed since the last partition switch */
+    sec = _TOD.seconds_trigger / 1000000000UL;
+    for (i = 0; i < sec; i++){
+      _TOD.seconds_trigger -= 1000000000UL;
+    }
+  }
+
+  /* _Watchdog_Tickle_ticks();  */
+  sec = (ticks * nanoseconds_per_tick)/1000000000UL;
+  
+  _Watchdog_Adjust(&_Watchdog_Ticks_chain, WATCHDOG_FORWARD, ticks);
+  _Watchdog_Adjust(&_Watchdog_Seconds_chain, WATCHDOG_FORWARD, sec);
+
+  /* _Scheduler_Tick is an alias to an entry in a jump table, the implementation
+   * of which depends on the scheduler used. The workaround is to call it
+   * from a for(;;) loop as many times as ticks have elapsed (might be expensive),
+   * or just leave the scheduling to follow its own time, unsynchronized with
+   * other partitions or the hypervisor's real time passage.
+   */
+  /* 
+   * _Scheduler_Tick();
+   *
+   * if ( _Thread_Is_context_switch_necessary() &&
+   *   _Thread_Is_dispatching_enabled() )
+   *   _Thread_Dispatch();
+   */
+}

@@ -53,15 +53,62 @@ typedef enum
 
 typedef enum
 {
-	POK_SYSCALL_CONSWRITE	=	10,
+   POK_SYSCALL_CONSWRITE                           =  10,
+   POK_SYSCALL_GETTICK                             =  20,
+   POK_SYSCALL_INT_NUMBER                          =  42,
+   POK_SYSCALL_THREAD_CREATE                       =  50,
+   POK_SYSCALL_THREAD_SLEEP_UNTIL                  =  51,
+   POK_SYSCALL_THREAD_SLEEP                        =  52,
+   POK_SYSCALL_THREAD_SUSPEND                      =  53,
+   POK_SYSCALL_THREAD_RESTART                      =  54,
+   POK_SYSCALL_THREAD_STOP                         =  55,
+   POK_SYSCALL_THREAD_PERIOD                       =  56,
+   POK_SYSCALL_THREAD_STOPSELF                     =  57,
+   POK_SYSCALL_THREAD_ID                           =  58,
+   POK_SYSCALL_THREAD_STATUS                       =  59,
+   
+   POK_SYSCALL_MIDDLEWARE_SAMPLING_ID              = 101,
+   POK_SYSCALL_MIDDLEWARE_SAMPLING_READ            = 102,
+   POK_SYSCALL_MIDDLEWARE_SAMPLING_STATUS          = 103,
+   POK_SYSCALL_MIDDLEWARE_SAMPLING_WRITE           = 104,
+   POK_SYSCALL_MIDDLEWARE_SAMPLING_CREATE          = 105,
+   
+   POK_SYSCALL_MIDDLEWARE_QUEUEING_CREATE          = 110,
+   POK_SYSCALL_MIDDLEWARE_QUEUEING_SEND            = 111,
+   POK_SYSCALL_MIDDLEWARE_QUEUEING_RECEIVE         = 112,
+   POK_SYSCALL_MIDDLEWARE_QUEUEING_ID              = 113,
+   POK_SYSCALL_MIDDLEWARE_QUEUEING_STATUS          = 114,
+   
+   POK_SYSCALL_MIDDLEWARE_VIRTUAL_CREATE           = 150,
+   POK_SYSCALL_MIDDLEWARE_VIRTUAL_NB_DESTINATIONS  = 151,
+   POK_SYSCALL_MIDDLEWARE_VIRTUAL_DESTINATION      = 152,
+   POK_SYSCALL_MIDDLEWARE_VIRTUAL_GET_GLOBAL       = 153,
+   
+   POK_SYSCALL_LOCKOBJ_CREATE                      = 201,
+   POK_SYSCALL_LOCKOBJ_OPERATION                   = 202,
+   
+   POK_SYSCALL_ERROR_HANDLER_CREATE                = 301,
+   POK_SYSCALL_ERROR_HANDLER_SET_READY             = 302,
+   POK_SYSCALL_ERROR_RAISE_APPLICATION_ERROR       = 303,
+   POK_SYSCALL_ERROR_GET                           = 304,
+   
+   POK_SYSCALL_PARTITION_SET_MODE                  = 404,
+   POK_SYSCALL_PARTITION_GET_ID                    = 405,
+   POK_SYSCALL_PARTITION_GET_PERIOD                = 406,
+   POK_SYSCALL_PARTITION_GET_DURATION              = 407,
+   POK_SYSCALL_PARTITION_GET_LOCK_LEVEL            = 408,
+   POK_SYSCALL_PARTITION_GET_OPERATING_MODE        = 409,
+   POK_SYSCALL_PARTITION_GET_START_CONDITION       = 410,
+   POK_SYSCALL_PARTITION_GET_MEMORY_INFO           = 411,
+   
+   POK_SYSCALL_INB                                 = 501,
+   POK_SYSCALL_OUTB                                = 502,
+   
+   POK_SYSCALL_PCI_REGISTER                        = 601,
 
-	POK_SYSCALL_PARTITION_GET_MEMORY_INFO = 411,
-  
-  POK_SYSCALL_REGISTER_TICK_NOTIFY  = 701,
-  POK_SYSCALL_REGISTER_RTEMS_ISR    = 702,
-	/*
-	 * ***
-	 */
+   POK_SYSCALL_REGISTER_TICK_NOTIFY                = 701,
+   POK_SYSCALL_REGISTER_RTEMS_ISR                  = 702,
+   POK_SYSCALL_REGISTER_RTEMS_ELAPSED_TICKS        = 703,
 } pok_syscall_id_t;
 
 typedef struct
