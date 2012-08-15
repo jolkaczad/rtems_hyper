@@ -16,6 +16,13 @@
  *  http://www.rtems.com/license/LICENSE.
  */
 
+/*
+ * The code here is to accomodate some drivers from the i386 shared directory,
+ * for the POK BSP they are useless but removing will break compilation.
+ *
+ * Leaving this to be here is harmless, this code can be thrown when the POK
+ * BSP gets its own architecture directory.
+ */
 #ifndef _IRQ_H_
 #define _IRQ_H_
 

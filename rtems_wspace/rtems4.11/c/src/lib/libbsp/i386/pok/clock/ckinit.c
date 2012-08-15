@@ -16,6 +16,7 @@
 
 #include <bsp.h>
 #include <bsp/poksyscalls.h>
+#include <bsp/irq_pok.h>
 
 #include <rtems.h>
 #include <rtems/config.h>
@@ -26,7 +27,6 @@
 void Clock_exit( void );
 void Clock_isr (void);
 
-void rtems_clock_tick_update(uint32_t ticks_u32);
 /*
  *  The interrupt vector number associated with the clock tick device
  *  driver.
@@ -97,48 +97,13 @@ void Clock_isr(
   */
 }
 
-
-/*
- * during development, all the files concerning the POK-RTEMS interrupt channelling
- * will be temporarily kept in the clock driver files for convenience
- */
-
-typedef enum {
-  POK_IRQSOURCE_CLOCK = 0,
-} pok_isr_sources_t;
-
-void (*isr_handlers[CPU_INTERRUPT_NUMBER_OF_VECTORS])(void) = {NULL};
-
-void isr_dispatch (
-    pok_isr_sources_t source
-)
-{
-  void (*fptr)(void);
-
-  fptr = isr_handlers[source];
-  
-  if (fptr != NULL){
-    fptr();
-  }
-}
-
-void install_handler (
-    pok_isr_sources_t source,
-    void (*handler)(void)
-)
-{
-  if (handler == NULL){
-    return;
-  }
-
-  isr_handlers[source] = handler;
-}
 /*
  *  Install_clock
  *
  *  Install a clock tick handler and reprograms the chip.  This
  *  is used to initially establish the clock tick.
  */
+void rtems_clock_tick_update(uint32_t ticks_u32);
 void Install_clock(
   void(*clock_handler)(void)
 )

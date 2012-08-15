@@ -60,6 +60,10 @@ $(PROJECT_INCLUDE)/bsp/irq.h: irq/irq.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/irq.h
 PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/irq.h
 
+$(PROJECT_INCLUDE)/bsp/irq_pok.h: irq/irq_pok.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
+	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/irq_pok.h
+PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/irq_pok.h
+
 $(PROJECT_INCLUDE)/bsp/cpu.h: score/cpu.h $(PROJECT_INCLUDE)/bsp/$(dirstamp)
 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/bsp/cpu.h
 PREINSTALL_FILES += $(PROJECT_INCLUDE)/bsp/cpu.h
