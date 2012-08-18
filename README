@@ -1,0 +1,27 @@
+Perhaps later, this file will be the starting point for a list of documents
+describing the project in detail. Right now it will only contain a list of
+matters which might be relevant for the code review.
+
+ISSUES
+
+# The linking process is perhaps just a couple lines away from being fixed.
+RTEMS alone compiles fine, since it just builds libraries which it's normal
+to have unresolved symbols. The problem appears when building the application,
+it has to link against libpok to be able to make syscalls and the place for linker
+customization is inside bsp_specs. I spent more time than I'd like to admit on
+trying to get this work but failed miserably, hence the 'collect_script.sh'
+script as a temporary solution.
+
+# A ENABLE_HYPERVISOR parameter is passed to the configuration script to alter
+the way certain headers from cpukit/score/cpu/i386 are handled via a global
+'#define __RTEMS_ENABLE_HYPERVISOR__'. A strange bug appeared at one point, 
+causing the parameter to be invisible in certain *.h files, so that is why 
+at the moment the definition of __RTEMS_ENABLE_HYPERVISOR__ is hardcoded 
+inside headers from cpukit/../i386.
+
+These will be elaborated on when proper documentation and buglist is created.
+
+
+INSTALLATION
+
+A Howto on running the example is included in MANUAL in the root directory.
