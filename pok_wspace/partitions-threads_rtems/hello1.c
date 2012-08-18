@@ -47,13 +47,15 @@ void user_hello_part1 ()
 
   fptr = tick_notify;
 
-  /* pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, fptr); */
+  pok_syscall1 (POK_SYSCALL_REGISTER_TICK_NOTIFY, (uint32_t)fptr);
 
   printf ("partition fptr address: 0x%x\n", (uint32_t)tick_notify);
 	printf ("size: 0x%x, base_add: 0x%x, stack_size: 0x%x\n", size, base_addr, stack_size);
 
-  if (_notify != 0){
-    _notify = 0;
-    printf ("tick\n");
+  while(1){
+    if (_notify != 0){
+      _notify = 0;
+      printf ("tick\n");
+    }
   }
 }

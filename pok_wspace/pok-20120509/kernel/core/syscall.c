@@ -162,10 +162,10 @@ pok_ret_t pok_core_syscall (const pok_syscall_id_t       syscall_id,
          break;
       case POK_SYSCALL_PARTITION_GET_PERIOD:
 	return pok_current_partition_get_period ((uint64_t*)(args->arg1 + infos->base_addr));
-	 break;
+      	 break;
       case POK_SYSCALL_PARTITION_GET_DURATION:
 	return pok_current_partition_get_duration ((uint64_t*)(args->arg1 + infos->base_addr));
-	 break;
+      	 break;
       case POK_SYSCALL_PARTITION_GET_LOCK_LEVEL:
 	return pok_current_partition_get_lock_level ((uint32_t*)(args->arg1 + infos->base_addr));
          break;

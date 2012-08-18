@@ -32,7 +32,7 @@
 
 extern uint64_t pok_tick_counter;
 
-#define CLOCK_HANDLER pok_tick_counter += 1; pok_sched (); pok_isr_channel (POK_IRQSOURCE_CLOCK);
+#define CLOCK_HANDLER pok_tick_counter += 1; pok_sched (); /* pok_isr_channel (POK_IRQSOURCE_CLOCK); pok_tick_notify(); */
 
 #define POK_GETTICK() pok_tick_counter
 
