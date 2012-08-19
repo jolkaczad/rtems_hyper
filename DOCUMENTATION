@@ -1,0 +1,121 @@
+* DOCUMENTATION
+*
+* Created by Wiktor Langowski <jolkaczad[*]gmail.com>
+*
+* 2012-08-20, Wiktor Langowski; initial
+
+
+ISSUES
+
+# The linking process is perhaps just a couple lines away from being fixed.
+RTEMS alone compiles fine, since it just builds libraries which it's normal
+to have unresolved symbols. The problem appears when building the application,
+it has to link against libpok to be able to make syscalls and the place for linker
+customization is inside bsp_specs. I spent more time than I'd like to admit on
+trying to get this work but failed miserably, hence the 'collect_script.sh'
+script as a temporary solution.
+
+# A ENABLE_HYPERVISOR parameter is passed to the configuration script to alter
+the way certain headers from cpukit/score/cpu/i386 are handled via a global
+'#define __RTEMS_ENABLE_HYPERVISOR__'. A strange bug appeared at one point, 
+causing the parameter to be invisible in certain *.h files, so that is why 
+at the moment the definition of __RTEMS_ENABLE_HYPERVISOR__ is hardcoded 
+inside headers from cpukit/../i386.
+
+
+FEATURES
+
+--directory structure
+The adaptation layer between RTEMS and the hypervisor is in the form of a BSP
+package in c/src/lib/libbsp/i386/pok. Logically it may make more sense to 
+create a new CPU called "virtual" or "hypervisor" and arrange the BSP files 
+inside of it according to the hypervisor used, so it would look like
+c/../libbsp/virtual/pok c/../libbsp/virtual/xen c/../libbsp/virtual/XtratuM
+etc. Ideally, the BSP should be CPU independent and the same code should be
+compiled after switching the cross compilation environment.
+
+The reason for using the sub-optimal file structure is that the RTEMS
+compilation procedure chooses its cross compiling environment according to the
+directory where the BSP is located. The solution to this may strongly interfere
+with the current Automake scripts so at this time it hasn't been discussed any
+further.
+
+Another issue and reason for altering the file structure in the future, is that
+during the compilation of a BSP for a given CPU, the files from inside
+cpukit/score/cpu/RTEMS_CPU are included in the compilation. For a hypervisor
+BSP, most (even all) of these procedures are useless since they deal with
+directly communicating with the hardware. At this moment, the ENABLE_HYPERVISOR
+passed to the configure script creates a global preprocessor parameter,
+__RTEMS_ENABLE_HYPERVISOR__ which excludes the offensive segments of code.
+
+--compilation and linking
+Compilation of RTEMS proceeds in much the same way as with any other BSP,
+though a parameter ENABLE_HYPERVISOR=1 must be passed to the configuration
+script. The details are described in MANUAL. A bug and its dirty fix are
+associated with the compilation, it's described in the buglist section of this
+document.
+
+Creating a fully symbol resolved ELF image requires linking against libpok. The
+procedure is described in MANUAL.
+
+
+--loading the image
+Combining the ELF image with the POK kernel is done via a custom written script
+pokrtems_combine.sh located in the POK directory. The script measures the size
+of the images, creates and compiles a C file which declares a large empty array
+used by POK to store the partition images and ultimately creates the pok.elf
+file to be loaded by the emulator.
+
+
+--allocating the memory for the BSP
+Work area is allocated after making a system call to POK, asking about the size
+and addresses for memory allocated by the POK kernel for the partitions. In
+POK, the stack and heap memory is placed right at the beginning of the
+partition space. For details refer to libbsp/i386/pok/start/bspgetworkarea.c
+and the linker script inside libbsp/i386/pok/startup/linkcmds
+
+
+--console
+Currently the BSP suports printing messages through prinkt() and printf(). The
+driver pushes the string character by character through a syscall to POK. If
+required, this can be optimized since the used syscall can accept more than one
+character with every call.
+
+
+--context switch
+The context switch implementation is a modified version of the "regular"
+context switch for i386, written in assembly. There were attempts to do this
+via syscall and allow the hypervisor to manage, but they were abandoned. The
+current setup works fine and allows for more apparent separation between RTEMS
+and POK. The downside is that it will not work for other processors, due to the
+assembly procedures. The efforts of moving the switch to POK are saved in a
+branch of the repository rtems_hyper.
+
+
+--clock tick and other interrupts
+A method to handle all interrupts, including the clock tick, was designed and
+implemented (still work in progress). At runtime, RTEMS registers a callback
+procedure in POK which is invoked at every POK interrupt, according to the
+value of a passed parameter the said function calls an appropriate interrupt
+handler inside RTEMS.
+
+The rtems_clock_tick() is just one of the interrupt handlers in RTEMS with the
+exception of having to update ticks which have elapsed when the partition is
+inactive. For this purpose a new callback fuction - rtems_clock_tick_update()
+is registered in POK and called every time when the POK kernel switches to a
+RTEMS partition. It updates the real time clock and adjusts the watchdog.
+
+
+INSTALLATION
+
+A howto on running the example is included in MANUAL inside the root directory.
+
+
+CHANGES TO POK
+
+Pok was updated by introducing a number of system calls and adding a couple
+functions associated with channeling the interrupts and the clock tick, which
+are not final and may be edited soon. The current demo uses one of the examples
+bundled with POK, namely parititions-threads. The code of this example nor its
+code was not modified, but bash scripts are used on top of it to compile the
+RTEMS application with the POK kernel.

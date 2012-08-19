@@ -1,3 +1,10 @@
+* MANUAL
+*
+* Created by Wiktor Langowski <jolkaczad[*]gmail.com>
+*
+* 2012-08-20, Wiktor Langowski; initial
+
+
 PREREQUISITES
 
 It's assumed the user has already installed the software packages required by
@@ -11,8 +18,10 @@ RTEMS_WSPACE_PATH path to the 'rtems_wspace' directory
 POK_PATH path to the main POK directory inside pok_root
 POK_WSPACE_PATH 'pok_wspace' directory
 
-to set these up, SETENV_HYPER can be sourced from inside the rtems-hyper directory
+to set these up, SETENV_HYPER can be sourced from inside the rtems-hyper
+directory
 $ source SETENV_HYPER
+
 
 INSTRUCTIONS
 
@@ -39,7 +48,8 @@ against
 $ cd $POK_WSPACE_PATH/partitions-threads_rtems
 $ make
 
-6. if not done before, set the makefile path variable required to compile the example on RTEMS
+6. if not done before, set the makefile path variable required to compile the
+example on RTEMS
 $ export RTEMS_MAKEFILE_PATH=$RTEMS_WSPACE_PATH/b-pok/install/i386-rtems4.11/pok
 
 7. compile the example. The compilation will break during linking
