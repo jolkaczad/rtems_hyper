@@ -18,7 +18,7 @@
 #include <types.h>
 #include <core/syscall.h>
 
-int _notify = 0;
+volatile int _notify = 0;
 int ticks;
 
 void tick_notify (void)
@@ -35,6 +35,7 @@ void user_hello_part1 ()
 	uint32_t size;
 	uint32_t stack_size;
 	uint32_t base_addr;
+  uint32_t cs;
 
   void (*fptr)(void);
 	
@@ -52,7 +53,7 @@ void user_hello_part1 ()
   printf ("partition fptr address: 0x%x\n", (uint32_t)tick_notify);
 	printf ("size: 0x%x, base_add: 0x%x, stack_size: 0x%x\n", size, base_addr, stack_size);
 
-  while(1){
+  while(0){
     if (_notify != 0){
       _notify = 0;
       printf ("tick\n");

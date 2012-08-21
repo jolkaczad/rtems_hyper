@@ -74,8 +74,14 @@ $ cd $POK_WSPACE_PATH/partitions-threads_rtems
 $ ./call_pokrtems_combine.sh
 
 11. verify the process by running the compiled elf file inside QEMU; expected
-output is one partition printing hello world messages and the other printing
-a "RTEMS bsp_start()" first (using a direct system call to POK),
-and "RTEMS printk()" later (produced by RTEMS' printk()) both coming
-from the bsp_start() function inside RTEMS.
+output is one partition printing some debug initialization information messages
+first, and later messages from the running application like this:
+
+*** HELLO WORLD TEST ***
+Hello World
+*** End OF HELLO WORLD TEST ***
+while(1);
+
+Right now, the other partition's output consists of a hello world message and
+some memory information.
 $ make run

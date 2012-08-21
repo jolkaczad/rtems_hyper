@@ -50,7 +50,12 @@ void pok_time_init (void)
    pok_bsp_time_init ();
 }
 
-void (*pok_tick_callback)(void) = NULL;
+void dummy_function (void)
+{
+    ;
+}
+
+void (*pok_tick_callback)(void) = dummy_function;
 void pok_tick_notify (void)
 {
   if (pok_tick_callback != NULL){
